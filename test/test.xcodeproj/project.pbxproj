@@ -19,6 +19,7 @@
 		2AC4C51A244A741900FBE3BA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AC4C519244A741900FBE3BA /* CoreGraphics.framework */; };
 		2AC4C51C244A742200FBE3BA /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AC4C51B244A742200FBE3BA /* CoreMedia.framework */; };
 		2AC4C51E244A742B00FBE3BA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AC4C51D244A742B00FBE3BA /* CoreFoundation.framework */; };
+		2AFF621D244CC8230052B80E /* AttachmentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFF621C244CC8230052B80E /* AttachmentHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -57,6 +58,7 @@
 		2AC4C51D244A742B00FBE3BA /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		2AC4C51F244A743200FBE3BA /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		2AC4C521244A751700FBE3BA /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../opencv2.framework; sourceTree = "<group>"; };
+		2AFF621C244CC8230052B80E /* AttachmentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				2A28EE89244B6DC800CB1F56 /* OpenCVWrapper.h */,
 				2A28EE8A244B6DC800CB1F56 /* OpenCVWrapper.mm */,
 				2A28EE8C244B6F4000CB1F56 /* test-prefix.pch */,
+				2AFF621C244CC8230052B80E /* AttachmentHandler.swift */,
 				2A28EE88244B6DC800CB1F56 /* test-Bridging-Header.h */,
 			);
 			path = test;
@@ -202,6 +205,7 @@
 			files = (
 				2AC4C505244A73DA00FBE3BA /* ViewController.swift in Sources */,
 				2AC4C501244A73DA00FBE3BA /* AppDelegate.swift in Sources */,
+				2AFF621D244CC8230052B80E /* AttachmentHandler.swift in Sources */,
 				2A28EE8B244B6DC800CB1F56 /* OpenCVWrapper.mm in Sources */,
 				2AC4C503244A73DA00FBE3BA /* SceneDelegate.swift in Sources */,
 			);
