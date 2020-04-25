@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2A236B52244AD88B00F15112 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A236B51244AD88B00F15112 /* opencv2.framework */; };
 		2A28EE8B244B6DC800CB1F56 /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A28EE8A244B6DC800CB1F56 /* OpenCVWrapper.mm */; };
 		2A4D09C0244AB63300317C12 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AC4C51F244A743200FBE3BA /* Accelerate.framework */; };
 		2AC4C501244A73DA00FBE3BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC4C500244A73DA00FBE3BA /* AppDelegate.swift */; };
@@ -71,7 +70,6 @@
 				2AC4C51E244A742B00FBE3BA /* CoreFoundation.framework in Frameworks */,
 				2AC4C51C244A742200FBE3BA /* CoreMedia.framework in Frameworks */,
 				2A4D09C0244AB63300317C12 /* Accelerate.framework in Frameworks */,
-				2A236B52244AD88B00F15112 /* opencv2.framework in Frameworks */,
 				2AC4C51A244A741900FBE3BA /* CoreGraphics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

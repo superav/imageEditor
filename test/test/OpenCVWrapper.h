@@ -11,11 +11,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OpenCVWrapper : NSObject
-+ (NSString *)openCVVersionString;
-+ (UIImage *)changeImageBrightness:(UIImage *)image : (float)val;
-+ (UIImage *)changeSaturation: (UIImage *)image : (int) satChange : (int) colorChannel;
-
-@end
+//@interface OpenCVWrapper : NSObject
+//+ (NSString *)openCVVersionString;
+//+ (UIImage *)changeImageBrightness:(UIImage *)image : (float)val;
+//+ (UIImage *)changeSaturation: (UIImage *)image : (int) satChange : (int) colorChannel;
+//
+//@end
 
 NS_ASSUME_NONNULL_END
