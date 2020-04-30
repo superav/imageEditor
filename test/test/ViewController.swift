@@ -12,12 +12,15 @@ import CoreML
 class ViewController: UIViewController {
     @IBOutlet weak var imageOutlet: UIImageView!
     @IBOutlet var sliderOutlets: [UISlider]!
+    @IBOutlet weak var remixButton: UIButton!
     
     let sampleImage = UIImage(named: "sample")
     var beginImage: CIImage!
     var colorFilter: CIFilter!
 //    var gaussFilter: CIFilter!
     var context: CIContext!
+    
+    let numStyles = 9
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -119,8 +122,42 @@ class ViewController: UIViewController {
 
 //ML STUFF BEGINS DOWN HERE
     
+    @IBAction func remixPressed(_ sender: Any) {
+        stylizePic()
+    }
+    
     func stylizePic(){
-        let model = StarryStyle();
+        let styleIndex = Int.random(in: 0..<numStyles)
+        let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
+        for i in 0...((styleArray?.count)!-1){
+            styleArray?[i] = 0.0
+        }
+        
+        styleArray?[styleIndex] = 1.0
+        
+        let model = Trial3()
+        
+        let modelInputSize = CGSize(width: 256, height: 256)
+        
+        var pixelBuffer: CVPixelBuffer?
+        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+                     kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
+        CVPixelBufferCreate(kCFAllocatorDefault,
+                            Int(modelInputSize.width),
+                            Int(modelInputSize.height),
+                            kCVPixelFormatType_32BGRA,
+                            attrs,
+                            &pixelBuffer)
+        let context = CIContext()
+        context.render(beginImage, to: pixelBuffer!)
+        let output = try? model.prediction(image: pixelBuffer!, index: styleArray!)
+        let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!)
+        imageOutlet.image = UIImage(ciImage: predImage)
+    }
+    
+    /*
+    func stylizePic(){
+        let model = Trial3();
         let styleArray = try? MLMultiArray(shape: [1] as [NSNumber], dataType: .double)
         styleArray?[0] = 1.0
         
@@ -172,7 +209,7 @@ class ViewController: UIViewController {
     }
 
 
-
+*/
 
 }
 
