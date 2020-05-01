@@ -17,7 +17,6 @@ class ViewController: UIViewController {
     let sampleImage = UIImage(named: "sample")
     var beginImage: CIImage!
     var colorFilter: CIFilter!
-//    var gaussFilter: CIFilter!
     var context: CIContext!
     
     let numStyles = 9
@@ -27,7 +26,6 @@ class ViewController: UIViewController {
         
         // Do any additional setup after loading the view.
         colorFilter = CIFilter(name: "CIColorControls")
-//        gaussFilter = CIFilter(name: "CIGaussianBlur")
         beginImage = CIImage(image: sampleImage!)
         
         context = CIContext(mtlDevice: MTLCreateSystemDefaultDevice()!)
@@ -93,16 +91,23 @@ class ViewController: UIViewController {
         }
     }
     
-//    @IBAction func changeBlue(_ sender: UISlider) {
-//        let image = CIImage(image: imageOutlet.image!)
-//        gaussFilter.setValue(image, forKey: kCIInputImageKey)
-//        gaussFilter.setValue(sender.value, forKey: kCIInputRadiusKey)
-//        let outputImage = gaussFilter.outputImage
-//        
-//        if let cgImage = context!.createCGImage(outputImage!, from: outputImage!.extent){
-//            imageOutlet.image = UIImage(cgImage: cgImage)
-//        }
-//    }
+    func reapplyFilters() {
+        for slider in sliderOutlets {
+            switch slider.restorationIdentifier {
+            case "sat":
+                colorFilter.setValue(slider.value, forKey: kCIInputSaturationKey)
+                break
+                
+            case "contrast":
+                colorFilter.setValue(slider.value, forKey: kCIInputContrastKey)
+                break
+                
+            default:
+                colorFilter.setValue(slider.value, forKey: kCIInputBrightnessKey)
+                break
+            }
+        }
+    }
     
     @IBAction func loadImage(_ sender: UIButton) {
         AttachmentHandler.handler.showAttachmentActionSheet(vc: self)
@@ -114,8 +119,9 @@ class ViewController: UIViewController {
             
             self.resetFiltersAndSliders()
         }
-        AttachmentHandler.handler.videoPickedBlock = {(video) in
+        AttachmentHandler.handler.videoPickedBlock = {(videoURL) in
             print("VIDEO")
+            
         }
     }
 
@@ -123,10 +129,13 @@ class ViewController: UIViewController {
 //ML STUFF BEGINS DOWN HERE
     
     @IBAction func remixPressed(_ sender: Any) {
-        stylizePic()
+        let styleImage = stylizePic()
+        imageOutlet.image = UIImage(ciImage: styleImage)
+        colorFilter.setValue(styleImage, forKey: kCIInputImageKey)
+        reapplyFilters()
     }
     
-    func stylizePic(){
+    func stylizePic() -> CIImage {
         let styleIndex = Int.random(in: 0..<numStyles)
         let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
         for i in 0...((styleArray?.count)!-1){
@@ -148,11 +157,12 @@ class ViewController: UIViewController {
                             kCVPixelFormatType_32BGRA,
                             attrs,
                             &pixelBuffer)
-        let context = CIContext()
-        context.render(beginImage, to: pixelBuffer!)
+//        let context = CIContext()
+        context.render(beginImage, to: pixelBuffer!) // change begin image for video stuff
         let output = try? model.prediction(image: pixelBuffer!, index: styleArray!)
-        let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!)
-        imageOutlet.image = UIImage(ciImage: predImage)
+        let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
+        return predImage
+//        imageOutlet.image = UIImage(ciImage: predImage)
     }
     
     /*

@@ -16,7 +16,7 @@ class AttachmentHandler: NSObject {
     fileprivate var viewController: UIViewController?
     
     var imagePickedBlock: ((UIImage) -> (Void))?
-    var videoPickedBlock: ((NSURL) -> (Void))?
+    var videoPickedBlock: ((URL) -> (Void))?
     
     enum FileType {
         case camera, photoLibrary, video
@@ -151,7 +151,7 @@ class AttachmentHandler: NSObject {
         let cameraAlert = UIAlertController(title: alertMessage, message: nil, preferredStyle: .alert)
         
         let settingsButton = UIAlertAction(title: "Open Settings", style: .destructive) { (_) -> Void in
-            let settingsURL = NSURL(string: UIApplication.openSettingsURLString)
+            let settingsURL = URL(string: UIApplication.openSettingsURLString)
             
             if let url = settingsURL {
                 UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
@@ -180,7 +180,7 @@ extension AttachmentHandler: UIImagePickerControllerDelegate, UINavigationContro
             print("No Image")
         }
         
-        if let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? NSURL {
+        if let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
             print("URL: ", videoURL)
             
             let data = NSData(contentsOf: videoURL as URL)!
@@ -193,10 +193,11 @@ extension AttachmentHandler: UIImagePickerControllerDelegate, UINavigationContro
         viewController?.dismiss(animated: true, completion: nil)
     }
     
-    fileprivate func compress(_ videoURL: NSURL){
-        let compressURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + NSUUID().uuidString + ".MOV")
+    fileprivate func compress(_ videoURL: URL){
+        let compressURL = URL(fileURLWithPath: NSTemporaryDirectory() + NSUUID().uuidString + ".MOV")
+//        let compressURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + NSUUID().uuidString + ".MOV")
         
-        compressVideo(inputURL: videoURL as URL, outputURL: compressURL) { (exportSession) in
+        compressVideo(inputURL: videoURL, outputURL: compressURL) { (exportSession) in
             guard let session = exportSession else {
                 return
             }
@@ -210,7 +211,7 @@ extension AttachmentHandler: UIImagePickerControllerDelegate, UINavigationContro
                 print("Size after compression \(Double(compressedData.length / 1048576)) mb")
                 
                 DispatchQueue.main.async {
-                    self.videoPickedBlock?(compressURL as NSURL)
+                    self.videoPickedBlock?(compressURL)
                 }
                 
             default:

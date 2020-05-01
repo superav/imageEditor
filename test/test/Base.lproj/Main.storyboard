@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="02u-MY-Yfh">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Image-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="test" customModuleProvider="target" sceneMemberID="viewController">
@@ -22,7 +22,7 @@
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="34" translatesAutoresizingMaskIntoConstraints="NO" id="Ljd-4L-Waw">
-                                <rect key="frame" x="10" y="458" width="394" height="404"/>
+                                <rect key="frame" x="10" y="409" width="394" height="404"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oiw-Zf-4CT">
                                         <rect key="frame" x="0.0" y="0.0" width="394" height="57"/>
@@ -125,6 +125,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Image" id="kOH-od-aJX"/>
                     <connections>
                         <outlet property="imageOutlet" destination="D5w-yg-ceX" id="WNr-s8-gqX"/>
                         <outlet property="remixButton" destination="K6a-Ki-AOz" id="M03-wc-aTz"/>
@@ -135,7 +136,66 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="137.68115942028987" y="112.5"/>
+            <point key="canvasLocation" x="135" y="169"/>
+        </scene>
+        <!--Video-->
+        <scene sceneID="MAY-I2-YC5">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="p2i-63-w41" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <viewController id="4lY-5a-NBe" customClass="VideoController" customModule="test" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Qhg-k6-O8v">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u9r-hn-fmQ" customClass="AVPlayerView" customModule="test" customModuleProvider="target">
+                                <rect key="frame" x="20" y="64" width="374" height="299"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b6U-YP-eVE">
+                                <rect key="frame" x="184" y="446" width="46" height="30"/>
+                                <state key="normal" title="Play"/>
+                                <connections>
+                                    <action selector="playButtonPressed:" destination="4lY-5a-NBe" eventType="touchUpInside" id="PmT-iX-iql"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="hiq-R9-oUH" firstAttribute="trailing" secondItem="u9r-hn-fmQ" secondAttribute="trailing" constant="20" id="2Q9-yh-Fr2"/>
+                            <constraint firstItem="u9r-hn-fmQ" firstAttribute="leading" secondItem="hiq-R9-oUH" secondAttribute="leading" constant="20" id="A44-Z8-mxD"/>
+                            <constraint firstItem="u9r-hn-fmQ" firstAttribute="top" secondItem="hiq-R9-oUH" secondAttribute="top" constant="20" id="JJr-Yk-e2e"/>
+                            <constraint firstItem="hiq-R9-oUH" firstAttribute="trailing" secondItem="b6U-YP-eVE" secondAttribute="trailing" constant="184" id="YIf-hi-qOw"/>
+                            <constraint firstItem="hiq-R9-oUH" firstAttribute="bottom" secondItem="u9r-hn-fmQ" secondAttribute="bottom" constant="450" id="bxQ-ps-SiX"/>
+                            <constraint firstItem="b6U-YP-eVE" firstAttribute="centerX" secondItem="hiq-R9-oUH" secondAttribute="centerX" id="ea1-a7-uFy"/>
+                            <constraint firstItem="b6U-YP-eVE" firstAttribute="top" secondItem="u9r-hn-fmQ" secondAttribute="bottom" constant="83" id="isR-hj-zwQ"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="hiq-R9-oUH"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Video" id="snu-07-YGB"/>
+                    <connections>
+                        <outlet property="playerView" destination="u9r-hn-fmQ" id="leA-qD-Psi"/>
+                    </connections>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="1020" y="169"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="9f5-NV-R7F">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jfd-al-IgM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tabBarController id="02u-MY-Yfh" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="1eG-7Z-UhL">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="103-kl-j4r"/>
+                        <segue destination="4lY-5a-NBe" kind="relationship" relationship="viewControllers" id="cGe-Ic-ofg"/>
+                    </connections>
+                </tabBarController>
+            </objects>
+            <point key="canvasLocation" x="-965" y="170"/>
         </scene>
     </scenes>
 </document>
