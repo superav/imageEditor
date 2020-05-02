@@ -210,7 +210,12 @@ class ViewController: UIViewController {
         }else {
             context.render(CIImage(cgImage:inputImg.cgImage!), to: pixelBuffer!) // change begin image for video stuff
         }
-        let output = try? model.prediction(image: pixelBuffer!, index: styleArray!)
+        var output:Trial3Output? = nil;
+        let queue = OperationQueue()
+        queue.addOperation {
+            output = try? model.prediction(image: pixelBuffer!, index: styleArray!)
+        }
+        queue.waitUntilAllOperationsAreFinished()
         let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
         return predImage
     }
