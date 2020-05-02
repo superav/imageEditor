@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreML
+import AVKit
 
 class ViewController: UIViewController {
     @IBOutlet weak var imageOutlet: UIImageView!
@@ -15,9 +16,11 @@ class ViewController: UIViewController {
     @IBOutlet weak var remixButton: UIButton!
     
     let sampleImage = UIImage(named: "sample")
+    let loadingScreen = LoadingScreen()
     var beginImage: CIImage!
     var colorFilter: CIFilter!
     var context: CIContext!
+    var playerVC: AVPlayerViewController?
     
     let numStyles = 9
     
@@ -31,43 +34,14 @@ class ViewController: UIViewController {
         context = CIContext(mtlDevice: MTLCreateSystemDefaultDevice()!)
         
         colorFilter.setValue(beginImage, forKey: kCIInputImageKey)
-        
         imageOutlet.image = sampleImage
+        playerVC = nil
+        print("loaded")
     }
     
-    @IBAction func changeBrightness(_ sender: UISlider) {
-        colorFilter.setValue(sender.value / 2, forKey: kCIInputBrightnessKey)
-        let outputImage = colorFilter.outputImage
-        
-        if let cgImage = context!.createCGImage(outputImage!, from: outputImage!.extent){
-            imageOutlet.image = UIImage(cgImage: cgImage)
-        }
-    }
-    
-    
-    @IBAction func changeContrast(_ sender: UISlider) {
-        colorFilter.setValue(sender.value / 2, forKey: kCIInputContrastKey)
-        let outputImage = colorFilter.outputImage
-        
-        
-        if let cgImage = context!.createCGImage(outputImage!, from: outputImage!.extent){
-            imageOutlet.image = UIImage(cgImage: cgImage)
-        }
-    }
-    
-    @IBAction func changeGreen(_ sender: UISlider) {
-        colorFilter.setValue(sender.value, forKey: kCIInputSaturationKey)
-        let outputImage = colorFilter.outputImage
-        
-        
-        if let cgImage = context!.createCGImage(outputImage!, from: outputImage!.extent){
-            imageOutlet.image = UIImage(cgImage: cgImage)
-        }
-    }
-    
-    @IBAction func revertImage(_ sender: UIButton) {
-        imageOutlet.image = UIImage(ciImage: beginImage)
-        resetFiltersAndSliders()
+    override func viewWillAppear(_ animated: Bool) {
+        self.view.addSubview(loadingScreen)
+        loadingScreen.hide()
     }
     
     func resetFiltersAndSliders() {
@@ -109,6 +83,51 @@ class ViewController: UIViewController {
         }
     }
     
+    func generateVideoThumbnail(url: URL) -> UIImage? {
+        let videoAsset = AVAsset(url: url)
+        let imageGenerator = AVAssetImageGenerator(asset: videoAsset)
+        let cgImage = try! imageGenerator.copyCGImage(at: CMTime(seconds: 0, preferredTimescale: 1), actualTime: nil)
+        
+        return UIImage(cgImage: cgImage)
+    }
+    
+    @IBAction func changeBrightness(_ sender: UISlider) {
+        colorFilter.setValue(sender.value / 2, forKey: kCIInputBrightnessKey)
+        let outputImage = colorFilter.outputImage
+        
+        if let cgImage = context!.createCGImage(outputImage!, from: outputImage!.extent){
+            imageOutlet.image = UIImage(cgImage: cgImage)
+        }
+    }
+    
+    
+    @IBAction func changeContrast(_ sender: UISlider) {
+        colorFilter.setValue(sender.value / 2, forKey: kCIInputContrastKey)
+        let outputImage = colorFilter.outputImage
+        
+        
+        if let cgImage = context!.createCGImage(outputImage!, from: outputImage!.extent){
+            imageOutlet.image = UIImage(cgImage: cgImage)
+        }
+    }
+    
+    @IBAction func changeGreen(_ sender: UISlider) {
+        colorFilter.setValue(sender.value, forKey: kCIInputSaturationKey)
+        let outputImage = colorFilter.outputImage
+        
+        
+        if let cgImage = context!.createCGImage(outputImage!, from: outputImage!.extent){
+            imageOutlet.image = UIImage(cgImage: cgImage)
+        }
+    }
+    
+    @IBAction func revertImage(_ sender: UIButton) {
+        imageOutlet.image = UIImage(ciImage: beginImage)
+        resetFiltersAndSliders()
+    }
+    
+    
+    
     @IBAction func loadImage(_ sender: UIButton) {
         AttachmentHandler.handler.showAttachmentActionSheet(vc: self)
         AttachmentHandler.handler.imagePickedBlock = {(image) in
@@ -116,24 +135,54 @@ class ViewController: UIViewController {
             self.beginImage = CIImage(image: image)
             self.colorFilter.setValue(self.beginImage, forKey: kCIInputImageKey)
             self.imageOutlet.image = image
+            self.playerVC = nil
             
             self.resetFiltersAndSliders()
         }
         AttachmentHandler.handler.videoPickedBlock = {(videoURL) in
-            print("VIDEO")
-            
+            self.playerVC = AVPlayerViewController()
+            self.playerVC!.player = AVPlayer(url: videoURL)
+            let thumbnail = self.generateVideoThumbnail(url: videoURL)
+
+            self.imageOutlet.image = thumbnail
         }
     }
-
+    
+    // Video player will pop up when preview is tapped
+    @IBAction func imageTapped(_ sender: UITapGestureRecognizer) {
+        if let videoPlayer = playerVC {
+            self.present(videoPlayer, animated: true) {
+                videoPlayer.player!.play()
+            }
+        }
+        print("TAPPED")
+    }
+    
 
 //ML STUFF BEGINS DOWN HERE
     
     @IBAction func remixPressed(_ sender: Any) {
-        let styleIndex = Int.random(in: 0..<numStyles)
-        let styleImage = stylizePic(inputImg: imageOutlet.image!, styleIndex: styleIndex)
-        imageOutlet.image = UIImage(ciImage: styleImage)
-        colorFilter.setValue(styleImage, forKey: kCIInputImageKey)
-        reapplyFilters()
+        loadingScreen.show()
+        remixButton.isEnabled = false
+        for slider in sliderOutlets {
+            slider.isEnabled = false
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            let styleIndex = Int.random(in: 0..<self.numStyles)
+                    let styleImage = self.stylizePic(inputImg: self.imageOutlet.image!, styleIndex: styleIndex)
+                    self.imageOutlet.image = UIImage(ciImage: styleImage)
+                    self.colorFilter.setValue(styleImage, forKey: kCIInputImageKey)
+                    self.reapplyFilters()
+            
+            DispatchQueue.main.async {
+                self.loadingScreen.hide()
+                self.remixButton.isEnabled = true
+                for slider in self.sliderOutlets {
+                    slider.isEnabled = false
+                }
+            }
+        }
     }
     
     func stylizePic(inputImg: UIImage, styleIndex: Int) -> CIImage {
@@ -155,8 +204,6 @@ class ViewController: UIViewController {
                             kCVPixelFormatType_32BGRA,
                             attrs,
                             &pixelBuffer)
-//        let context = CIContext()
-//        print(inputImg.ciImage)
         
         if let ciImage = inputImg.ciImage {
             context.render(ciImage, to: pixelBuffer!)
@@ -166,7 +213,6 @@ class ViewController: UIViewController {
         let output = try? model.prediction(image: pixelBuffer!, index: styleArray!)
         let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
         return predImage
-//        imageOutlet.image = UIImage(ciImage: predImage)
     }
 
 }

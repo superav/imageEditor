@@ -14,6 +14,7 @@ import MobileCoreServices
 class AttachmentHandler: NSObject {
     static let handler = AttachmentHandler()
     fileprivate var viewController: UIViewController?
+    //    private var permissionGranted = false
     
     var imagePickedBlock: ((UIImage) -> (Void))?
     var videoPickedBlock: ((URL) -> (Void))?
@@ -24,58 +25,90 @@ class AttachmentHandler: NSObject {
     
     func loadMedia(vc: UIViewController, fileType: FileType){
         viewController = vc
-        let authorizationStatus = PHPhotoLibrary.authorizationStatus()
-        
-        switch authorizationStatus{
-        case .authorized:
-            switch fileType {
-            case .camera:
-                openCamera()
-                break
-                
-            case .photoLibrary:
-                openPhotos()
-                break
-                
-            case .video:
-                openVideo()
-                break
-            }
-            
-        case .denied:
-            showSettingsAlert(fileType)
-            break
-            
-        case .notDetermined:
-            PHPhotoLibrary.requestAuthorization { (status) in
-                if status == PHAuthorizationStatus.authorized{
+        checkPermissions { permissionGranted in
+            if permissionGranted {
+                DispatchQueue.main.async {
                     switch fileType {
                     case .camera:
                         self.openCamera()
-                        break
-                        
-                    case .photoLibrary:
-                        self.openPhotos()
-                        break
                         
                     case .video:
                         self.openVideo()
-                        break
+                        
+                    case .photoLibrary:
+                        self.openPhotos()
                     }
-                } else{
-                    print("actively denied")
+                }
+                
+            } else {
+                DispatchQueue.main.async {
+                    self.showSettingsAlert(fileType)
+                    
                 }
             }
-            break
             
-        case .restricted:
-            print("restricted")
-            break
+        }
+        
+        //            if permissionGranted {
+        //                switch fileType {
+        //                case .camera:
+        //                    self.openCamera()
+        //
+        //                case .video:
+        //                    self.openVideo()
+        //
+        //                case .photoLibrary:
+        //                    self.openPhotos()
+        //                }
+        //            } else {
+        //                self.showSettingsAlert(fileType)
+        //            }
+        
+    }
+    
+    func checkPermissions(completion: @escaping (Bool) -> ()) {
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .authorized:
+            completion(true)
+            
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization { (status) in
+                switch status {
+                case .authorized:
+                    completion(true)
+                    //                    DispatchQueue.main.async {
+                    //                    permissionGranted = true
+                    //                    }
+                    
+                default:
+                    //                    permissionGranted = false
+                    completion(false)
+                }
+            }
+            
+            //            completion(requestPermission())
             
         default:
-            break
+            completion(false)
         }
     }
+    
+//    func requestPermission() -> Bool {
+//        var permissionGranted = false
+//        PHPhotoLibrary.requestAuthorization { (status) in
+//            switch status {
+//            case .authorized:
+//                DispatchQueue.main.async {
+//                    permissionGranted = true
+//                }
+//                
+//            default:
+//                permissionGranted = false
+//            }
+//        }
+//        
+//        return permissionGranted
+//    }
     
     // Camera Access
     func openCamera(){
@@ -172,7 +205,7 @@ extension AttachmentHandler: UIImagePickerControllerDelegate, UINavigationContro
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         viewController?.dismiss(animated: true, completion: nil)
     }
-
+    
     @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             self.imagePickedBlock?(image)
@@ -195,7 +228,7 @@ extension AttachmentHandler: UIImagePickerControllerDelegate, UINavigationContro
     
     fileprivate func compress(_ videoURL: URL){
         let compressURL = URL(fileURLWithPath: NSTemporaryDirectory() + NSUUID().uuidString + ".MOV")
-//        let compressURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + NSUUID().uuidString + ".MOV")
+        //        let compressURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + NSUUID().uuidString + ".MOV")
         
         compressVideo(inputURL: videoURL, outputURL: compressURL) { (exportSession) in
             guard let session = exportSession else {

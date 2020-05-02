@@ -15,14 +15,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="D5w-yg-ceX">
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="D5w-yg-ceX">
                                 <rect key="frame" x="10" y="54" width="394" height="394"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="D5w-yg-ceX" secondAttribute="height" multiplier="1:1" id="niZ-fK-v0j"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="5O2-4o-c5k" appends="YES" id="r9N-Sp-WCg"/>
+                                </connections>
                             </imageView>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="34" translatesAutoresizingMaskIntoConstraints="NO" id="Ljd-4L-Waw">
-                                <rect key="frame" x="10" y="409" width="394" height="404"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="Ljd-4L-Waw">
+                                <rect key="frame" x="10" y="469" width="394" height="344"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oiw-Zf-4CT">
                                         <rect key="frame" x="0.0" y="0.0" width="394" height="57"/>
@@ -45,7 +49,7 @@
                                         </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HeA-vP-kSj">
-                                        <rect key="frame" x="0.0" y="91" width="394" height="30"/>
+                                        <rect key="frame" x="0.0" y="79" width="394" height="30"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Contrast" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BIy-n3-qqG" userLabel="Red">
                                                 <rect key="frame" x="0.0" y="0.0" width="124" height="30"/>
@@ -65,7 +69,7 @@
                                         </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2r0-PG-iFS">
-                                        <rect key="frame" x="0.0" y="155" width="394" height="57"/>
+                                        <rect key="frame" x="0.0" y="131" width="394" height="57"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saturation" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2In-Xk-ZKL" userLabel="Green">
                                                 <rect key="frame" x="0.0" y="0.0" width="124" height="57"/>
@@ -85,21 +89,21 @@
                                         </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K6a-Ki-AOz">
-                                        <rect key="frame" x="0.0" y="246" width="394" height="30"/>
+                                        <rect key="frame" x="0.0" y="210" width="394" height="30"/>
                                         <state key="normal" title="Remix Image"/>
                                         <connections>
                                             <action selector="remixPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="K8E-tv-kIj"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fa1-H2-aFm">
-                                        <rect key="frame" x="0.0" y="310" width="394" height="30"/>
+                                        <rect key="frame" x="0.0" y="262" width="394" height="30"/>
                                         <state key="normal" title="Revert Image"/>
                                         <connections>
                                             <action selector="revertImage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="U20-aU-Nl3"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DUx-km-WxY">
-                                        <rect key="frame" x="0.0" y="374" width="394" height="30"/>
+                                        <rect key="frame" x="0.0" y="314" width="394" height="30"/>
                                         <state key="normal" title="Load Image"/>
                                         <connections>
                                             <action selector="loadImage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Je8-To-g7b"/>
@@ -135,54 +139,47 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="5O2-4o-c5k">
+                    <connections>
+                        <action selector="imageTapped:" destination="BYZ-38-t0r" id="JwW-Gg-aj7"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="135" y="169"/>
+            <point key="canvasLocation" x="134.78260869565219" y="168.75"/>
         </scene>
         <!--Video-->
         <scene sceneID="MAY-I2-YC5">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="p2i-63-w41" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewController id="4lY-5a-NBe" customClass="VideoController" customModule="test" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Qhg-k6-O8v">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u9r-hn-fmQ" customClass="AVPlayerView" customModule="test" customModuleProvider="target">
-                                <rect key="frame" x="20" y="64" width="374" height="299"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b6U-YP-eVE">
-                                <rect key="frame" x="184" y="446" width="46" height="30"/>
-                                <state key="normal" title="Play"/>
-                                <connections>
-                                    <action selector="playButtonPressed:" destination="4lY-5a-NBe" eventType="touchUpInside" id="PmT-iX-iql"/>
-                                </connections>
-                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Fcy-8J-csb">
+                                <rect key="frame" x="10" y="54" width="394" height="749"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="hiq-R9-oUH" firstAttribute="trailing" secondItem="u9r-hn-fmQ" secondAttribute="trailing" constant="20" id="2Q9-yh-Fr2"/>
-                            <constraint firstItem="u9r-hn-fmQ" firstAttribute="leading" secondItem="hiq-R9-oUH" secondAttribute="leading" constant="20" id="A44-Z8-mxD"/>
-                            <constraint firstItem="u9r-hn-fmQ" firstAttribute="top" secondItem="hiq-R9-oUH" secondAttribute="top" constant="20" id="JJr-Yk-e2e"/>
-                            <constraint firstItem="hiq-R9-oUH" firstAttribute="trailing" secondItem="b6U-YP-eVE" secondAttribute="trailing" constant="184" id="YIf-hi-qOw"/>
-                            <constraint firstItem="hiq-R9-oUH" firstAttribute="bottom" secondItem="u9r-hn-fmQ" secondAttribute="bottom" constant="450" id="bxQ-ps-SiX"/>
-                            <constraint firstItem="b6U-YP-eVE" firstAttribute="centerX" secondItem="hiq-R9-oUH" secondAttribute="centerX" id="ea1-a7-uFy"/>
-                            <constraint firstItem="b6U-YP-eVE" firstAttribute="top" secondItem="u9r-hn-fmQ" secondAttribute="bottom" constant="83" id="isR-hj-zwQ"/>
+                            <constraint firstItem="Fcy-8J-csb" firstAttribute="centerY" secondItem="hiq-R9-oUH" secondAttribute="centerY" id="0BY-uf-amM"/>
+                            <constraint firstItem="Fcy-8J-csb" firstAttribute="centerX" secondItem="hiq-R9-oUH" secondAttribute="centerX" id="7z4-XN-dhn"/>
+                            <constraint firstItem="Fcy-8J-csb" firstAttribute="leading" secondItem="hiq-R9-oUH" secondAttribute="leading" constant="10" id="Ldo-zF-Yjp"/>
+                            <constraint firstItem="Fcy-8J-csb" firstAttribute="top" secondItem="hiq-R9-oUH" secondAttribute="top" constant="10" id="fMw-Nb-9TT"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="hiq-R9-oUH"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Video" id="snu-07-YGB"/>
                     <connections>
-                        <outlet property="playerView" destination="u9r-hn-fmQ" id="leA-qD-Psi"/>
+                        <outlet property="imageOutlet" destination="Fcy-8J-csb" id="7yM-f1-n1J"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="p2i-63-w41" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1020" y="169"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="9f5-NV-R7F">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jfd-al-IgM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <tabBarController id="02u-MY-Yfh" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="1eG-7Z-UhL">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
@@ -194,6 +191,7 @@
                         <segue destination="4lY-5a-NBe" kind="relationship" relationship="viewControllers" id="cGe-Ic-ofg"/>
                     </connections>
                 </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jfd-al-IgM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-965" y="170"/>
         </scene>
