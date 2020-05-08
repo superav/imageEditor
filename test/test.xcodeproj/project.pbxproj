@@ -7,10 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2A28EE8B244B6DC800CB1F56 /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A28EE8A244B6DC800CB1F56 /* OpenCVWrapper.mm */; };
 		2A2B7B02245BBC0200A6321A /* VideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B7B01245BBC0200A6321A /* VideoController.swift */; };
 		2A2B7B06245BBF1A00A6321A /* app_assets in Resources */ = {isa = PBXBuildFile; fileRef = 2A2B7B05245BBF1A00A6321A /* app_assets */; };
-		2A2B7B08245BC14100A6321A /* AVPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B7B07245BC14100A6321A /* AVPlayerView.swift */; };
 		2A4D09C0244AB63300317C12 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AC4C51F244A743200FBE3BA /* Accelerate.framework */; };
 		2A7CF6B8245D297200B513B4 /* LoadingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7CF6B7245D297200B513B4 /* LoadingScreen.swift */; };
 		2A7CF6BA245D435900B513B4 /* LiveImageFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7CF6B9245D435900B513B4 /* LiveImageFeed.swift */; };
@@ -43,13 +41,8 @@
 /* Begin PBXFileReference section */
 		2A236B4D244AD86300F15112 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../../../../../ios/opencv2.framework; sourceTree = "<group>"; };
 		2A236B51244AD88B00F15112 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ios/opencv2.framework; sourceTree = "<group>"; };
-		2A28EE88244B6DC800CB1F56 /* test-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "test-Bridging-Header.h"; sourceTree = "<group>"; };
-		2A28EE89244B6DC800CB1F56 /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
-		2A28EE8A244B6DC800CB1F56 /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
-		2A28EE8C244B6F4000CB1F56 /* test-prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "test-prefix.pch"; sourceTree = "<group>"; };
 		2A2B7B01245BBC0200A6321A /* VideoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoController.swift; sourceTree = "<group>"; };
 		2A2B7B05245BBF1A00A6321A /* app_assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = app_assets; sourceTree = "<group>"; };
-		2A2B7B07245BC14100A6321A /* AVPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerView.swift; sourceTree = "<group>"; };
 		2A4D09BB244AB61700317C12 /* opencv2 */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = opencv2; path = opencv2.framework/Versions/A/opencv2; sourceTree = "<group>"; };
 		2A4D09BC244AB62300317C12 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		2A7CF6B7245D297200B513B4 /* LoadingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScreen.swift; sourceTree = "<group>"; };
@@ -118,13 +111,8 @@
 				2AC4C50B244A73DC00FBE3BA /* LaunchScreen.storyboard */,
 				2A2B7B05245BBF1A00A6321A /* app_assets */,
 				2AC4C50E244A73DC00FBE3BA /* Info.plist */,
-				2A28EE89244B6DC800CB1F56 /* OpenCVWrapper.h */,
 				2A2B7B01245BBC0200A6321A /* VideoController.swift */,
-				2A28EE8A244B6DC800CB1F56 /* OpenCVWrapper.mm */,
-				2A2B7B07245BC14100A6321A /* AVPlayerView.swift */,
-				2A28EE8C244B6F4000CB1F56 /* test-prefix.pch */,
 				2AFF621C244CC8230052B80E /* AttachmentHandler.swift */,
-				2A28EE88244B6DC800CB1F56 /* test-Bridging-Header.h */,
 			);
 			path = test;
 			sourceTree = "<group>";
@@ -225,8 +213,6 @@
 				2AC4C501244A73DA00FBE3BA /* AppDelegate.swift in Sources */,
 				2AFF621D244CC8230052B80E /* AttachmentHandler.swift in Sources */,
 				E6229FC6245A75430028CAD5 /* Trial3.mlmodel in Sources */,
-				2A2B7B08245BC14100A6321A /* AVPlayerView.swift in Sources */,
-				2A28EE8B244B6DC800CB1F56 /* OpenCVWrapper.mm in Sources */,
 				2AC4C503244A73DA00FBE3BA /* SceneDelegate.swift in Sources */,
 				2A2B7B02245BBC0200A6321A /* VideoController.swift in Sources */,
 				2A7CF6B8245D297200B513B4 /* LoadingScreen.swift in Sources */,
@@ -375,17 +361,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = D5QGMXSHDG;
+				DEVELOPMENT_TEAM = KVDLQGW65R;
 				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = test/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = iChangeIdentifier;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.umd.jzhang60.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "test/test-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -398,17 +383,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = D5QGMXSHDG;
+				DEVELOPMENT_TEAM = KVDLQGW65R;
 				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = test/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = iChangeIdentifier;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.umd.jzhang60.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "test/test-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

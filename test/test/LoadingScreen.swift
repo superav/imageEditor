@@ -23,14 +23,14 @@ class LoadingScreen: UIVisualEffectView {
      */
     
     init() {
-        text.text = "Remixing Image"
+        text.text = "Remixing"
         view = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blur))
         super.init(effect: blur)
         setup()
     }
     
     required init?(coder aDecoder: NSCoder) {
-        text.text = "Remixing Image"
+        text.text = "Remixing"
         view = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blur))
         super.init(coder: aDecoder)
         setup()

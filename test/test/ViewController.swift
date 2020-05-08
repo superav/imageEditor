@@ -9,6 +9,7 @@
 import UIKit
 import CoreML
 import AVKit
+import AssetsLibrary
 
 class ViewController: UIViewController {
     @IBOutlet weak var imageOutlet: UIImageView!
@@ -19,14 +20,17 @@ class ViewController: UIViewController {
     let loadingScreen = LoadingScreen()
     var beginImage: CIImage!
     var colorFilter: CIFilter!
-    var context: CIContext!
-    var playerVC: AVPlayerViewController?
+    private var context: CIContext!
+    private var playerVC: AVPlayerViewController?
+    private var videoURL: URL?
+    private var frameGenerator: AVAssetImageGenerator!
+    var frames: [UIImage]!
     
     let numStyles = 9
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         // Do any additional setup after loading the view.
         colorFilter = CIFilter(name: "CIColorControls")
         beginImage = CIImage(image: sampleImage!)
@@ -34,7 +38,7 @@ class ViewController: UIViewController {
         context = CIContext(mtlDevice: MTLCreateSystemDefaultDevice()!)
         
         colorFilter.setValue(beginImage, forKey: kCIInputImageKey)
-        imageOutlet.image = sampleImage
+//        imageOutlet.image = sampleImage
         playerVC = nil
         print("loaded")
     }
@@ -42,6 +46,35 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         self.view.addSubview(loadingScreen)
         loadingScreen.hide()
+    }
+    
+    func grabFrames() {
+        guard let vidURL = videoURL else { return }
+        
+        let asset = AVAsset(url: vidURL)
+        let duration = CMTimeGetSeconds(asset.duration)
+        
+        self.frameGenerator = AVAssetImageGenerator(asset: asset)
+        self.frameGenerator.appliesPreferredTrackTransform = true
+        self.frames = []
+        
+        for index in 0..<Int(duration){
+            getFrame(fromTime: Float64(index))
+        }
+        
+        self.frameGenerator = nil
+    }
+    
+    private func getFrame(fromTime: Float64) {
+        let time:CMTime = CMTimeMakeWithSeconds(fromTime, preferredTimescale:600)
+        let image:CGImage
+        do {
+           try image = self.frameGenerator.copyCGImage(at:time, actualTime:nil)
+        } catch {
+           return
+        }
+        
+        self.frames.append(UIImage(cgImage: image))
     }
     
     func resetFiltersAndSliders() {
@@ -91,6 +124,34 @@ class ViewController: UIViewController {
         return UIImage(cgImage: cgImage)
     }
     
+    @objc func saveImage(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer){
+        if let error = error {
+            let errorAlert = UIAlertController(title: "Save Error", message: error.localizedDescription, preferredStyle: .alert)
+            errorAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+            
+            present(errorAlert, animated: true)
+        } else {
+            let savedAlert = UIAlertController(title: "Image Saved", message: "Image saved to Photos Library", preferredStyle: .alert)
+            savedAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+            
+            present(savedAlert, animated: true)
+        }
+    }
+    
+    @objc func saveVideo(_ videoPath: String, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer){
+        if let error = error {
+            let errorAlert = UIAlertController(title: "Save Error", message: error.localizedDescription, preferredStyle: .alert)
+            errorAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+            
+            present(errorAlert, animated: true)
+        } else {
+            let savedAlert = UIAlertController(title: "Video Saved", message: "Video saved to Photos Library", preferredStyle: .alert)
+            savedAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+            
+            present(savedAlert, animated: true)
+        }
+    }
+    
     @IBAction func changeBrightness(_ sender: UISlider) {
         colorFilter.setValue(sender.value / 2, forKey: kCIInputBrightnessKey)
         let outputImage = colorFilter.outputImage
@@ -136,14 +197,18 @@ class ViewController: UIViewController {
             self.colorFilter.setValue(self.beginImage, forKey: kCIInputImageKey)
             self.imageOutlet.image = image
             self.playerVC = nil
+            self.videoURL = nil
             
             self.resetFiltersAndSliders()
         }
         AttachmentHandler.handler.videoPickedBlock = {(videoURL) in
             self.playerVC = AVPlayerViewController()
             self.playerVC!.player = AVPlayer(url: videoURL)
-            let thumbnail = self.generateVideoThumbnail(url: videoURL)
+            self.videoURL = videoURL
+            guard let thumbnail = self.generateVideoThumbnail(url: videoURL) else { return }
 
+            self.beginImage = CIImage(image: thumbnail)
+            self.colorFilter.setValue(self.beginImage, forKey: kCIInputImageKey)
             self.imageOutlet.image = thumbnail
         }
     }
@@ -158,6 +223,19 @@ class ViewController: UIViewController {
         print("TAPPED")
     }
     
+    @IBAction func saveMedia(_ sender: UIButton) {
+        if let _ = playerVC, let vidURL = videoURL {
+            let videoPath = vidURL.absoluteString
+            
+            if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(videoPath) {
+                UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, #selector(saveVideo(_:didFinishSavingWithError:contextInfo:)), nil)
+            }
+        } else {
+            guard let outputImage = imageOutlet.image else { return }
+            UIImageWriteToSavedPhotosAlbum(outputImage, self, #selector(saveImage(_:didFinishSavingWithError:contextInfo:)), nil)
+        }
+    }
+    
 
 //ML STUFF BEGINS DOWN HERE
     
@@ -170,10 +248,18 @@ class ViewController: UIViewController {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             let styleIndex = Int.random(in: 0..<self.numStyles)
-                    let styleImage = self.stylizePic(inputImg: self.imageOutlet.image!, styleIndex: styleIndex)
-                    self.imageOutlet.image = UIImage(ciImage: styleImage)
-                    self.colorFilter.setValue(styleImage, forKey: kCIInputImageKey)
-                    self.reapplyFilters()
+            let styleImage = self.stylizePic(inputImg: self.imageOutlet.image!, styleIndex: styleIndex)
+            self.imageOutlet.image = UIImage(ciImage: styleImage)
+            self.colorFilter.setValue(styleImage, forKey: kCIInputImageKey)
+            self.reapplyFilters()
+            
+//            if let videoURL = self.videoURL {
+//                self.grabFrames()
+//                
+//                for frame in self.frames {
+//                    ciImage = self.stylizePic(inputImg: frame, styleIndex: styleIndex)
+//                }
+//            }
             
             DispatchQueue.main.async {
                 self.loadingScreen.hide()

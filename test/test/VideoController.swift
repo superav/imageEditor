@@ -11,40 +11,28 @@ import AVKit
 
 class VideoController: UIViewController, FrameExtractorDelegate {
     
-    
-    
-//    @IBOutlet weak var playerView: AVPlayerView!
     @IBOutlet weak var imageOutlet: UIImageView!
     var frameExtractor: FrameExtractor!
     
-//    var url: URL?
-//
     override func viewDidLoad() {
         super.viewDidLoad()
         
         frameExtractor = FrameExtractor()
         frameExtractor.delegate = self
         
-        // Do any additional setup after loading the view.
-//        guard let videoUrl = Bundle.main.url(forResource: "video", withExtension: ".MOV", subdirectory: "app_assets") else {
-//            return
-        }
-//
-//        url = videoUrl
-//    }
-//
-//    @IBAction func playButtonPressed(_ sender: UIButton) {
-//        playVideo()
-//    }
-//
-//    func playVideo(){
-//        if let videoUrl = url { playerView.play(with: videoUrl)}
-//    }
+    }
+    
+    @IBAction func viewTypeChanged(_ sender: UISegmentedControl) {
+        frameExtractor.stylizeEnabled = sender.selectedSegmentIndex == 1
+    }
     
     func captured(image: UIImage) {
         imageOutlet.image = image
     }
     
+    @IBAction func check(_ sender: UIButton) {
+        frameExtractor.checkStylized()
+    }
     /*
     // MARK: - Navigation
 

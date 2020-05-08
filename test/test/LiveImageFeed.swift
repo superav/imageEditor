@@ -135,6 +135,12 @@ class FrameExtractor: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         return predImage
     }
     
+    func checkStylized(){
+        if stylizeEnabled{
+            print("stylized")
+        }
+    }
+    
     deinit {
         print("Live Image Feed Deinitialized")
     }
