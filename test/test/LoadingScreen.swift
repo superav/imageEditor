@@ -72,7 +72,7 @@ class LoadingScreen: UIVisualEffectView {
             
             layer.cornerRadius = 8.0
             layer.masksToBounds = true
-            text.text = "Remixing Image"
+            text.text = "Remixing"
             text.textAlignment = NSTextAlignment.center
             text.frame = CGRect(x: activityIndicatorSize + 5,
                                 y: 0,

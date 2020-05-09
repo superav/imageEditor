@@ -7,7 +7,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Image-->
+        <!--Media Editor-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="test" customModuleProvider="target" sceneMemberID="viewController">
@@ -30,7 +30,6 @@
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Brightness" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BjL-83-de9">
                                                 <rect key="frame" x="0.0" y="0.0" width="124" height="30"/>
-                                                <color key="backgroundColor" red="0.1764705882" green="0.18039215689999999" blue="0.18039215689999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -52,7 +51,6 @@
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Contrast" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BIy-n3-qqG" userLabel="Red">
                                                 <rect key="frame" x="0.0" y="0.0" width="124" height="30"/>
-                                                <color key="backgroundColor" red="0.1764705882" green="0.18039215689999999" blue="0.18039215689999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -74,7 +72,6 @@
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saturation" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2In-Xk-ZKL" userLabel="Green">
                                                 <rect key="frame" x="0.0" y="0.0" width="124" height="30"/>
-                                                <color key="backgroundColor" red="0.1764705882" green="0.18039215689999999" blue="0.18039215689999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -127,7 +124,7 @@
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zVP-mO-zie">
                                                 <rect key="frame" x="0.0" y="0.0" width="194" height="30"/>
                                                 <color key="backgroundColor" red="0.1764705882352941" green="0.1803921568627451" blue="0.1803921568627451" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <state key="normal" title="Save Image">
+                                                <state key="normal" title="Save Media">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <userDefinedRuntimeAttributes>
@@ -142,7 +139,7 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DUx-km-WxY">
                                                 <rect key="frame" x="194" y="0.0" width="200" height="30"/>
                                                 <color key="backgroundColor" red="0.1764705882352941" green="0.1803921568627451" blue="0.1803921568627451" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <state key="normal" title="Load Image">
+                                                <state key="normal" title="Load Media">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
@@ -171,7 +168,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Image" image="photo.fill" catalog="system" id="kOH-od-aJX"/>
+                    <tabBarItem key="tabBarItem" title="Media Editor" image="photo.fill" catalog="system" id="kOH-od-aJX"/>
                     <connections>
                         <outlet property="imageOutlet" destination="D5w-yg-ceX" id="WNr-s8-gqX"/>
                         <outlet property="remixButton" destination="K6a-Ki-AOz" id="M03-wc-aTz"/>
@@ -189,7 +186,7 @@
             </objects>
             <point key="canvasLocation" x="134.78260869565219" y="168.75"/>
         </scene>
-        <!--Live Feed-->
+        <!--Live Filter-->
         <scene sceneID="MAY-I2-YC5">
             <objects>
                 <viewController id="4lY-5a-NBe" customClass="VideoController" customModule="test" customModuleProvider="target" sceneMemberID="viewController">
@@ -236,7 +233,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="hiq-R9-oUH"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Live Feed" image="video.fill" catalog="system" id="snu-07-YGB"/>
+                    <tabBarItem key="tabBarItem" title="Live Filter" image="video.fill" catalog="system" id="snu-07-YGB"/>
                     <connections>
                         <outlet property="imageOutlet" destination="Fcy-8J-csb" id="7yM-f1-n1J"/>
                     </connections>
@@ -245,10 +242,10 @@
             </objects>
             <point key="canvasLocation" x="1020" y="169"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Animated Tab Bar Controller-->
         <scene sceneID="9f5-NV-R7F">
             <objects>
-                <tabBarController id="02u-MY-Yfh" sceneMemberID="viewController">
+                <tabBarController id="02u-MY-Yfh" customClass="AnimatedTabBarController" customModule="test" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="1eG-7Z-UhL">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>

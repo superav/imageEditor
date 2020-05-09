@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A1B55C82466ACF100F6729E /* AnimatedTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1B55C72466ACF100F6729E /* AnimatedTabBarController.swift */; };
 		2A2B7B02245BBC0200A6321A /* VideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B7B01245BBC0200A6321A /* VideoController.swift */; };
 		2A2B7B06245BBF1A00A6321A /* app_assets in Resources */ = {isa = PBXBuildFile; fileRef = 2A2B7B05245BBF1A00A6321A /* app_assets */; };
 		2A4D09C0244AB63300317C12 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AC4C51F244A743200FBE3BA /* Accelerate.framework */; };
@@ -39,6 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2A1B55C72466ACF100F6729E /* AnimatedTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedTabBarController.swift; sourceTree = "<group>"; };
 		2A236B4D244AD86300F15112 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../../../../../ios/opencv2.framework; sourceTree = "<group>"; };
 		2A236B51244AD88B00F15112 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ios/opencv2.framework; sourceTree = "<group>"; };
 		2A2B7B01245BBC0200A6321A /* VideoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoController.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				2AC4C500244A73DA00FBE3BA /* AppDelegate.swift */,
 				2AC4C502244A73DA00FBE3BA /* SceneDelegate.swift */,
 				2AC4C504244A73DA00FBE3BA /* ViewController.swift */,
+				2A1B55C72466ACF100F6729E /* AnimatedTabBarController.swift */,
 				2A7CF6B7245D297200B513B4 /* LoadingScreen.swift */,
 				2AC4C506244A73DA00FBE3BA /* Main.storyboard */,
 				2A7CF6B9245D435900B513B4 /* LiveImageFeed.swift */,
@@ -216,6 +219,7 @@
 				2AC4C503244A73DA00FBE3BA /* SceneDelegate.swift in Sources */,
 				2A2B7B02245BBC0200A6321A /* VideoController.swift in Sources */,
 				2A7CF6B8245D297200B513B4 /* LoadingScreen.swift in Sources */,
+				2A1B55C82466ACF100F6729E /* AnimatedTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
