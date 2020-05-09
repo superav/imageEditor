@@ -41,12 +41,8 @@
 
 /* Begin PBXFileReference section */
 		2A1B55C72466ACF100F6729E /* AnimatedTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedTabBarController.swift; sourceTree = "<group>"; };
-		2A236B4D244AD86300F15112 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../../../../../ios/opencv2.framework; sourceTree = "<group>"; };
-		2A236B51244AD88B00F15112 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ios/opencv2.framework; sourceTree = "<group>"; };
 		2A2B7B01245BBC0200A6321A /* VideoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoController.swift; sourceTree = "<group>"; };
 		2A2B7B05245BBF1A00A6321A /* app_assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = app_assets; sourceTree = "<group>"; };
-		2A4D09BB244AB61700317C12 /* opencv2 */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = opencv2; path = opencv2.framework/Versions/A/opencv2; sourceTree = "<group>"; };
-		2A4D09BC244AB62300317C12 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		2A7CF6B7245D297200B513B4 /* LoadingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScreen.swift; sourceTree = "<group>"; };
 		2A7CF6B9245D435900B513B4 /* LiveImageFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageFeed.swift; sourceTree = "<group>"; };
 		2AC4C4FD244A73DA00FBE3BA /* test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = test.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -57,12 +53,10 @@
 		2AC4C509244A73DC00FBE3BA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2AC4C50C244A73DC00FBE3BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2AC4C50E244A73DC00FBE3BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2AC4C515244A73FE00FBE3BA /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../../../../../opencv2.framework; sourceTree = "<group>"; };
 		2AC4C519244A741900FBE3BA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2AC4C51B244A742200FBE3BA /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		2AC4C51D244A742B00FBE3BA /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		2AC4C51F244A743200FBE3BA /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		2AC4C521244A751700FBE3BA /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../opencv2.framework; sourceTree = "<group>"; };
 		2AFF621C244CC8230052B80E /* AttachmentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentHandler.swift; sourceTree = "<group>"; };
 		E6229FC5245A75430028CAD5 /* Trial3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Trial3.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,16 +117,10 @@
 		2AC4C514244A73FE00FBE3BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2A4D09BC244AB62300317C12 /* opencv2.framework */,
-				2A236B4D244AD86300F15112 /* opencv2.framework */,
-				2A236B51244AD88B00F15112 /* opencv2.framework */,
-				2A4D09BB244AB61700317C12 /* opencv2 */,
-				2AC4C521244A751700FBE3BA /* opencv2.framework */,
 				2AC4C51F244A743200FBE3BA /* Accelerate.framework */,
 				2AC4C51D244A742B00FBE3BA /* CoreFoundation.framework */,
 				2AC4C51B244A742200FBE3BA /* CoreMedia.framework */,
 				2AC4C519244A741900FBE3BA /* CoreGraphics.framework */,
-				2AC4C515244A73FE00FBE3BA /* opencv2.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

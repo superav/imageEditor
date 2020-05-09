@@ -10,7 +10,7 @@ import UIKit
 
 class LoadingScreen: UIVisualEffectView {
     let activityIndicator = UIActivityIndicatorView(style: .medium)
-    let text = UILabel()
+    let label = UILabel()
     let blur = UIBlurEffect(style: .extraLight)
     let view: UIVisualEffectView
     
@@ -23,14 +23,12 @@ class LoadingScreen: UIVisualEffectView {
      */
     
     init() {
-        text.text = "Remixing"
         view = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blur))
         super.init(effect: blur)
         setup()
     }
     
     required init?(coder aDecoder: NSCoder) {
-        text.text = "Remixing"
         view = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blur))
         super.init(coder: aDecoder)
         setup()
@@ -39,7 +37,7 @@ class LoadingScreen: UIVisualEffectView {
     func setup() {
         contentView.addSubview(view)
         contentView.addSubview(activityIndicator)
-        contentView.addSubview(text)
+        contentView.addSubview(label)
         activityIndicator.startAnimating()
     }
     
@@ -72,14 +70,14 @@ class LoadingScreen: UIVisualEffectView {
             
             layer.cornerRadius = 8.0
             layer.masksToBounds = true
-            text.text = "Remixing"
-            text.textAlignment = NSTextAlignment.center
-            text.frame = CGRect(x: activityIndicatorSize + 5,
+            label.text = "Remixing"
+            label.textAlignment = NSTextAlignment.center
+            label.frame = CGRect(x: activityIndicatorSize + 5,
                                 y: 0,
                                 width: width - activityIndicatorSize - 15,
                                 height: height)
-            text.textColor = UIColor.gray
-            text.font = UIFont.boldSystemFont(ofSize: 16)
+            label.textColor = UIColor.gray
+            label.font = UIFont.boldSystemFont(ofSize: 16)
         }
     }
     

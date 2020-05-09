@@ -171,10 +171,11 @@
                     <tabBarItem key="tabBarItem" title="Media Editor" image="photo.fill" catalog="system" id="kOH-od-aJX"/>
                     <connections>
                         <outlet property="imageOutlet" destination="D5w-yg-ceX" id="WNr-s8-gqX"/>
-                        <outlet property="remixButton" destination="K6a-Ki-AOz" id="M03-wc-aTz"/>
                         <outletCollection property="sliderOutlets" destination="172-0t-3oY" collectionClass="NSMutableArray" id="d4U-Yr-UxT"/>
                         <outletCollection property="sliderOutlets" destination="oo8-Zg-rUg" collectionClass="NSMutableArray" id="5Xe-0D-ZRI"/>
                         <outletCollection property="sliderOutlets" destination="Mle-ka-Ac0" collectionClass="NSMutableArray" id="i2g-He-QQZ"/>
+                        <outletCollection property="buttons" destination="K6a-Ki-AOz" collectionClass="NSMutableArray" id="g1B-L0-zrQ"/>
+                        <outletCollection property="buttons" destination="Fa1-H2-aFm" collectionClass="NSMutableArray" id="I7b-Ur-zoI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

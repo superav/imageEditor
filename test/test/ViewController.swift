@@ -15,7 +15,7 @@ import VideoToolbox
 class ViewController: UIViewController {
     @IBOutlet weak var imageOutlet: UIImageView!
     @IBOutlet var sliderOutlets: [UISlider]!
-    @IBOutlet weak var remixButton: UIButton!
+    @IBOutlet var buttons: [UIButton]!
     
     let sampleImage = UIImage(named: "sample")
     let loadingScreen = LoadingScreen()
@@ -23,7 +23,8 @@ class ViewController: UIViewController {
     var colorFilter: CIFilter!
     private var context: CIContext!
     private var playerVC: AVPlayerViewController?
-    var videoURL: URL?
+    private var videoURL: URL?
+    private var videoAsset: AVAsset?
     private var frameGenerator: AVAssetImageGenerator!
     var frames: [CIImage]!
     
@@ -37,28 +38,32 @@ class ViewController: UIViewController {
         beginImage = CIImage(image: sampleImage!)
         
         context = CIContext(mtlDevice: MTLCreateSystemDefaultDevice()!)
-        
-
 //        imageOutlet.image = sampleImage
         
         guard let path = Bundle.main.path(forResource: "video", ofType: ".MOV", inDirectory: "app_assets") else { print("Bad URL"); return }
         videoURL = URL(fileURLWithPath: path)
-        playerVC = AVPlayerViewController()
-        self.playerVC!.player = AVPlayer(url: videoURL!)
-        guard let thumbnail = generateVideoThumbnail(url: videoURL!) else { return }
-        
-        beginImage = CIImage(image: thumbnail)
-        colorFilter.setValue(beginImage, forKey: kCIInputImageKey)
-        imageOutlet.image = thumbnail
-        print("loaded")
+        setupVideoPlayer()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         self.view.addSubview(loadingScreen)
-        loadingScreen.hide()
+//        loadingScreen.hide()
     }
     
-    
+    func setupVideoPlayer() {
+        guard let vidURL = videoURL else { return }
+        playerVC = AVPlayerViewController()
+        videoAsset = AVAsset(url: vidURL)
+        let playerItem = AVPlayerItem(asset: videoAsset!)
+        playerItem.seekingWaitsForVideoCompositionRendering = true
+        playerItem.videoComposition = generateVideoComposition(for: videoAsset!, styleIndex: 1)
+        self.playerVC!.player = AVPlayer(playerItem: playerItem)
+        guard let thumbnail = generateVideoThumbnail(url: vidURL) else { return }
+        
+        beginImage = CIImage(image: thumbnail)
+        colorFilter.setValue(beginImage, forKey: kCIInputImageKey)
+        imageOutlet.image = thumbnail
+    }
     
     func resetFiltersAndSliders() {
         colorFilter = CIFilter(name: "CIColorControls")
@@ -139,6 +144,15 @@ class ViewController: UIViewController {
         }
     }
     
+    func exportFinished(_ avExportSession: AVAssetExportSession) {
+        guard
+            avExportSession.status == .completed, let outputURL = avExportSession.outputURL
+            else {
+                return }
+        
+        UISaveVideoAtPathToSavedPhotosAlbum(outputURL.path, self, #selector(saveVideo(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+    
     @IBAction func changeBrightness(_ sender: UISlider) {
         colorFilter.setValue(sender.value / 2, forKey: kCIInputBrightnessKey)
         let outputImage = colorFilter.outputImage
@@ -189,14 +203,8 @@ class ViewController: UIViewController {
             self.resetFiltersAndSliders()
         }
         AttachmentHandler.handler.videoPickedBlock = {(videoURL) in
-            self.playerVC = AVPlayerViewController()
-            self.playerVC!.player = AVPlayer(url: videoURL)
             self.videoURL = videoURL
-            guard let thumbnail = self.generateVideoThumbnail(url: videoURL) else { return }
-            
-            self.beginImage = CIImage(image: thumbnail)
-            self.colorFilter.setValue(self.beginImage, forKey: kCIInputImageKey)
-            self.imageOutlet.image = thumbnail
+            self.setupVideoPlayer()
         }
     }
     
@@ -210,11 +218,43 @@ class ViewController: UIViewController {
     }
     
     @IBAction func saveMedia(_ sender: UIButton) {
-        if let _ = playerVC, let vidURL = videoURL {
+        if let _ = playerVC, let vidURL = videoURL, let asset = videoAsset {
             let videoPath = vidURL.path
             
             if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(videoPath) {
-                UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, #selector(saveVideo(_:didFinishSavingWithError:contextInfo:)), nil)
+                guard let exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality) else { return }
+                guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateStyle = .long
+                dateFormatter.timeStyle = .short
+                let date = dateFormatter.string(from: Date())
+                
+                exporter.outputURL = directory.appendingPathComponent("exportVideo-\(date).mov")
+                exporter.outputFileType = .mov
+                exporter.shouldOptimizeForNetworkUse = true
+                exporter.videoComposition = generateVideoComposition(for: asset, styleIndex: 0)
+                
+                for button in buttons {
+                    button.isEnabled = false
+                }
+                for slider in sliderOutlets {
+                    slider.isEnabled = false
+                }
+                
+                exporter.exportAsynchronously() {
+                    DispatchQueue.main.async {
+                        self.exportFinished(exporter)
+                        
+                        for button in self.buttons {
+                            button.isEnabled = true
+                        }
+                        
+                        for slider in self.sliderOutlets {
+                            slider.isEnabled = true
+                        }
+                    }
+                }
             }
         } else {
             guard let outputImage = imageOutlet.image else { return }
@@ -235,7 +275,11 @@ class ViewController: UIViewController {
     
     @IBAction func remixPressed(_ sender: Any) {
         loadingScreen.show()
-        remixButton.isEnabled = false
+        
+        for button in buttons {
+            button.isEnabled = false
+        }
+        
         for slider in sliderOutlets {
             slider.isEnabled = false
         }
@@ -243,13 +287,15 @@ class ViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             let styleIndex = Int.random(in: 0..<self.numStyles)
             
-            if self.videoURL != nil {
-                self.grabFrames()
-                self.stylizeVideo(inputFrames: self.frames, styleIndex: styleIndex)
+            if let videoURL = self.videoURL {
+//                self.grabFrames()
+//                self.stylizeVideo(inputFrames: self.frames, styleIndex: styleIndex)
                 self.playerVC = AVPlayerViewController()
-                self.playerVC?.player = AVPlayer(url: self.videoURL!)
+                let playerItem = self.stylizeVideo(url: videoURL, styleIndex: styleIndex)
+                self.playerVC?.player = AVPlayer(playerItem: playerItem)
+//                self.playerVC?.player = AVPlayer(url: videoURL)
                 
-                let styleImage = self.generateVideoThumbnail(url: self.videoURL!)
+                let styleImage = self.generateVideoThumbnail(url: videoURL)
                 self.imageOutlet.image = styleImage
                 self.colorFilter.setValue(CIImage(image: styleImage!), forKey: kCIInputImageKey)
             } else {
@@ -262,12 +308,41 @@ class ViewController: UIViewController {
             
             DispatchQueue.main.async {
                 self.loadingScreen.hide()
-                self.remixButton.isEnabled = true
+                
+                for button in self.buttons {
+                    button.isEnabled = true
+                }
+                
                 for slider in self.sliderOutlets {
                     slider.isEnabled = true
                 }
             }
         }
+    }
+    
+    func generateVideoComposition(for asset: AVAsset, styleIndex: Int) -> AVVideoComposition {
+        let composition = AVMutableVideoComposition(asset: asset, applyingCIFiltersWithHandler: { request in
+//            guard let self = self else { request.finish(with: Error); return}
+            let inputImage = request.sourceImage
+//            let styledImage = self.stylizePic(inputImg: UIImage(ciImage: inputImage), styleIndex: styleIndex)
+            self.colorFilter.setValue(inputImage, forKey: kCIInputImageKey)
+            let outputImage = self.colorFilter.outputImage
+            
+            request.finish(with: outputImage!, context: nil)
+            
+        })
+        
+        return composition
+    }
+    
+    func stylizeVideo(url: URL, styleIndex: Int) -> AVPlayerItem {
+        let asset = AVAsset(url: url)
+        let playerItem = AVPlayerItem(asset: asset)
+        
+        playerItem.seekingWaitsForVideoCompositionRendering = true
+        playerItem.videoComposition = generateVideoComposition(for: asset, styleIndex: styleIndex)
+        
+        return playerItem
     }
     
     // Grab all frames of a video
@@ -302,111 +377,111 @@ class ViewController: UIViewController {
     }
     
     // Takes in frames of video, stylizes them, and turns it into a video. Returns video thumbnail
-    func stylizeVideo(inputFrames: [CIImage], styleIndex: Int){
-        let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
-        
-        for i in 0...((styleArray?.count)!-1){
-            styleArray?[i] = 0.0
-        }
-        
-        styleArray?[styleIndex] = 1.0
-        
-        var frames = inputFrames
-        let outputSize = CGSize(width: frames[0].extent.width, height: frames[0].extent.height)
-        let fileManager = FileManager.default
-        let urls = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)
-        guard let documentDirectory = urls.first else { fatalError("Stylizing video bad URL") }
-        let videoOutputURL = documentDirectory.appendingPathComponent("outputVideo.mp4")
-        
-        if fileManager.fileExists(atPath: videoOutputURL.path) {
-            do {
-                try fileManager.removeItem(at: videoOutputURL)
-            } catch {
-                fatalError("Unable to delete file: \(error) : \(#function).")
-            }
-        }
-        
-        // Creating video asset writing and input
-        guard let videoWriter = try? AVAssetWriter(outputURL: videoOutputURL, fileType: .mp4) else { fatalError("AVAssetWriter error") }
-        
-        let outputSettings = [AVVideoCodecKey : AVVideoCodecType.h264,
-                              AVVideoWidthKey : NSNumber(value: Float(outputSize.width)),
-                              AVVideoHeightKey : NSNumber(value: Float(outputSize.height))] as [String : Any]
-        
-        guard videoWriter.canApply(outputSettings: outputSettings, forMediaType: .video) else { fatalError("Failed to apply AVWriter output settings") }
-        let videoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: outputSettings)
-        
-        let model = Trial3()
-        
-//        var pixelBuffer: CVPixelBuffer?
-        let pixelBufferAttributes: [CFString: Any]
-        pixelBufferAttributes = [kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32ARGB),
-                                 kCVPixelBufferWidthKey: Float(outputSize.width),
-                                 kCVPixelBufferHeightKey: Float(outputSize.height),
-                                 kCVPixelBufferCGBitmapContextCompatibilityKey: true,
-                                 kCVPixelBufferCGImageCompatibilityKey: true]
-        
-        let pixelBufferAdaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: videoWriterInput, sourcePixelBufferAttributes: pixelBufferAttributes as [String : Any])
-        
-        if videoWriter.canAdd(videoWriterInput){
-            videoWriter.add(videoWriterInput)
-        }
-        
-        if videoWriter.startWriting() {
-            videoWriter.startSession(atSourceTime: .zero)
-            assert(pixelBufferAdaptor.pixelBufferPool != nil)
-            
-            let mediaQueue = DispatchQueue(label: "mediaInputQueue")
-            
-            videoWriterInput.requestMediaDataWhenReady(on: mediaQueue) { () -> Void in
-                let fps: Int32 = 30
-                let frameDuration = CMTimeMake(value: 1, timescale: fps)
-                
-                var frameCount: Int64 = 0
-                var appendSuccess = true
-                
-                while !frames.isEmpty {
-                    if videoWriterInput.isReadyForMoreMediaData {
-                        let inputImg         = frames.remove(at: 0)
-                        let lastFrameTime    = CMTimeMake(value: frameCount, timescale: fps)
-                        let presentationTime = frameCount == 0 ? lastFrameTime : CMTimeAdd(lastFrameTime, frameDuration)
-                        
-                        var pixelBuffer: CVPixelBuffer?
-                        let status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, pixelBufferAdaptor.pixelBufferPool!, &pixelBuffer)
-                        
-                        if let pixelBuffer = pixelBuffer, status == 0 {
-                            self.context.render(inputImg, to: pixelBuffer)
-                            var output:Trial3Output? = nil;
-                            let queue = OperationQueue()
-                            queue.addOperation {
-                                output = try? model.prediction(image: pixelBuffer, index: styleArray!)
-                            }
-                            queue.waitUntilAllOperationsAreFinished()
-                            
-//                            let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
-                            
-                            appendSuccess = pixelBufferAdaptor.append(pixelBuffer, withPresentationTime: presentationTime)
-                        } else {
-                            print("Failed to allocate pixel buffer")
-                            appendSuccess = false
-                        }
-                        
-                    }
-                    
-                    if !appendSuccess {
-                        break
-                    }
-                    
-                    frameCount += 1
-                }
-                
-                videoWriterInput.markAsFinished()
-                videoWriter.finishWriting {
-                    self.videoURL = videoOutputURL
-                }
-            }
-        }
-    }
+//    func stylizeVideo(inputFrames: [CIImage], styleIndex: Int){
+//        let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//
+//        for i in 0...((styleArray?.count)!-1){
+//            styleArray?[i] = 0.0
+//        }
+//
+//        styleArray?[styleIndex] = 1.0
+//
+//        var frames = inputFrames
+//        let outputSize = CGSize(width: frames[0].extent.width, height: frames[0].extent.height)
+//        let fileManager = FileManager.default
+//        let urls = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)
+//        guard let documentDirectory = urls.first else { fatalError("Stylizing video bad URL") }
+//        let videoOutputURL = documentDirectory.appendingPathComponent("outputVideo.mp4")
+//
+//        if fileManager.fileExists(atPath: videoOutputURL.path) {
+//            do {
+//                try fileManager.removeItem(at: videoOutputURL)
+//            } catch {
+//                fatalError("Unable to delete file: \(error) : \(#function).")
+//            }
+//        }
+//
+//        // Creating video asset writing and input
+//        guard let videoWriter = try? AVAssetWriter(outputURL: videoOutputURL, fileType: .mp4) else { fatalError("AVAssetWriter error") }
+//
+//        let outputSettings = [AVVideoCodecKey : AVVideoCodecType.h264,
+//                              AVVideoWidthKey : NSNumber(value: Float(outputSize.width)),
+//                              AVVideoHeightKey : NSNumber(value: Float(outputSize.height))] as [String : Any]
+//
+//        guard videoWriter.canApply(outputSettings: outputSettings, forMediaType: .video) else { fatalError("Failed to apply AVWriter output settings") }
+//        let videoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: outputSettings)
+//
+//        let model = Trial3()
+//
+////        var pixelBuffer: CVPixelBuffer?
+//        let pixelBufferAttributes: [CFString: Any]
+//        pixelBufferAttributes = [kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32ARGB),
+//                                 kCVPixelBufferWidthKey: Float(outputSize.width),
+//                                 kCVPixelBufferHeightKey: Float(outputSize.height),
+//                                 kCVPixelBufferCGBitmapContextCompatibilityKey: true,
+//                                 kCVPixelBufferCGImageCompatibilityKey: true]
+//
+//        let pixelBufferAdaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: videoWriterInput, sourcePixelBufferAttributes: pixelBufferAttributes as [String : Any])
+//
+//        if videoWriter.canAdd(videoWriterInput){
+//            videoWriter.add(videoWriterInput)
+//        }
+//
+//        if videoWriter.startWriting() {
+//            videoWriter.startSession(atSourceTime: .zero)
+//            assert(pixelBufferAdaptor.pixelBufferPool != nil)
+//
+//            let mediaQueue = DispatchQueue(label: "mediaInputQueue")
+//
+//            videoWriterInput.requestMediaDataWhenReady(on: mediaQueue) { () -> Void in
+//                let fps: Int32 = 30
+//                let frameDuration = CMTimeMake(value: 1, timescale: fps)
+//
+//                var frameCount: Int64 = 0
+//                var appendSuccess = true
+//
+//                while !frames.isEmpty {
+//                    if videoWriterInput.isReadyForMoreMediaData {
+//                        let inputImg         = frames.remove(at: 0)
+//                        let lastFrameTime    = CMTimeMake(value: frameCount, timescale: fps)
+//                        let presentationTime = frameCount == 0 ? lastFrameTime : CMTimeAdd(lastFrameTime, frameDuration)
+//
+//                        var pixelBuffer: CVPixelBuffer?
+//                        let status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, pixelBufferAdaptor.pixelBufferPool!, &pixelBuffer)
+//
+//                        if let pixelBuffer = pixelBuffer, status == 0 {
+//                            self.context.render(inputImg, to: pixelBuffer)
+//                            var output:Trial3Output? = nil;
+//                            let queue = OperationQueue()
+//                            queue.addOperation {
+//                                output = try? model.prediction(image: pixelBuffer, index: styleArray!)
+//                            }
+//                            queue.waitUntilAllOperationsAreFinished()
+//
+////                            let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
+//
+//                            appendSuccess = pixelBufferAdaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+//                        } else {
+//                            print("Failed to allocate pixel buffer")
+//                            appendSuccess = false
+//                        }
+//
+//                    }
+//
+//                    if !appendSuccess {
+//                        break
+//                    }
+//
+//                    frameCount += 1
+//                }
+//
+//                videoWriterInput.markAsFinished()
+//                videoWriter.finishWriting {
+//                    self.videoURL = videoOutputURL
+//                }
+//            }
+//        }
+//    }
     
     func stylizePic(inputImg: UIImage, styleIndex: Int) -> CIImage {
         let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
