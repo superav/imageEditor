@@ -34,7 +34,7 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="172-0t-3oY">
+                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="172-0t-3oY">
                                                 <rect key="frame" x="122" y="0.0" width="274" height="31"/>
                                                 <color key="tintColor" red="0.10588235294117647" green="0.60392156862745094" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
@@ -55,7 +55,7 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <slider opaque="NO" contentMode="scaleToFill" restorationIdentifier="contrast" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="2" minValue="0.0" maxValue="3" translatesAutoresizingMaskIntoConstraints="NO" id="oo8-Zg-rUg">
+                                            <slider opaque="NO" contentMode="scaleToFill" restorationIdentifier="contrast" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="oo8-Zg-rUg">
                                                 <rect key="frame" x="122" y="0.0" width="274" height="31"/>
                                                 <color key="tintColor" red="0.10588235294117647" green="0.60392156862745094" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
@@ -176,6 +176,8 @@
                         <outletCollection property="sliderOutlets" destination="Mle-ka-Ac0" collectionClass="NSMutableArray" id="i2g-He-QQZ"/>
                         <outletCollection property="buttons" destination="K6a-Ki-AOz" collectionClass="NSMutableArray" id="g1B-L0-zrQ"/>
                         <outletCollection property="buttons" destination="Fa1-H2-aFm" collectionClass="NSMutableArray" id="I7b-Ur-zoI"/>
+                        <outletCollection property="buttons" destination="DUx-km-WxY" collectionClass="NSMutableArray" id="sur-5d-2yI"/>
+                        <outletCollection property="buttons" destination="zVP-mO-zie" collectionClass="NSMutableArray" id="irR-hX-H65"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
