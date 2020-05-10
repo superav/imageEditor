@@ -109,16 +109,22 @@ class VideoController: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         connection.videoOrientation = .portrait
         
-//        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        var ciImage: CIImage
         
-        do {
-            prediction = try mlModelWrapper?.prediction(_0: resizedBuffer!)
-        } catch {
-            print("Camera warming up")
-            return
+        if stylizeEnabled {
+            do {
+                prediction = try mlModelWrapper?.prediction(_0: resizedBuffer!)
+            } catch {
+                print("Camera warming up")
+                return
+            }
+            
+            ciImage = CIImage(cvImageBuffer: (prediction?._156)!)
+        } else {
+            guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+            ciImage = CIImage(cvImageBuffer: imageBuffer)
         }
-                
-        let ciImage = CIImage(cvImageBuffer: (prediction?._156)!)
+        
         guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return }
         let uiImage = UIImage(cgImage: cgImage)
         

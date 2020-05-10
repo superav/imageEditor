@@ -14,8 +14,8 @@
             filePath = "test/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
             landmarkName = "reapplyFilters()"
             landmarkType = "7">
          </BreakpointContent>
@@ -23,31 +23,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "AB0FC6ED-6C7F-4F4F-BDC9-BE6DD712DD2F"
+            uuid = "B51CD700-C116-429C-BDA2-82E529B6E83D"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "test/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "230"
-            endingLineNumber = "230"
-            landmarkName = "loadImage(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "B51CD700-C116-429C-BDA2-82E529B6E83D"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "test/ViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "399"
-            endingLineNumber = "399"
+            startingLineNumber = "408"
+            endingLineNumber = "408"
             landmarkName = "stylizePic(inputImg:styleIndex:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,9 +46,9 @@
             filePath = "test/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "430"
-            endingLineNumber = "430"
-            landmarkName = "scaleFilter(_:aspectRatio:scale:)"
+            startingLineNumber = "431"
+            endingLineNumber = "431"
+            landmarkName = "stylizePic(inputImg:styleIndex:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

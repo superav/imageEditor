@@ -24,7 +24,8 @@ class ViewController: UIViewController {
     private var playerVC: AVPlayerViewController?
     private var videoURL: URL?
     private var videoAsset: AVAsset?
-    private var isStylized = false
+    private var composition: AVVideoComposition?
+//    private var isStylized = false
     
     let numStyles = 9
     
@@ -72,13 +73,14 @@ class ViewController: UIViewController {
     func setupVideoPlayer() {
         guard let vidURL = videoURL else { return }
         
-        isStylized = false
+//        isStylized = false
         playerVC = AVPlayerViewController()
         videoAsset = AVAsset(url: vidURL)
+        composition = generateVideoComposition(for: videoAsset!, stylize: false)
         
         let playerItem = AVPlayerItem(asset: videoAsset!)
         playerItem.seekingWaitsForVideoCompositionRendering = true
-        playerItem.videoComposition = generateVideoComposition(for: videoAsset!, stylize: false)
+        playerItem.videoComposition = composition
         
         self.playerVC!.player = AVPlayer(playerItem: playerItem)
         guard let thumbnail = generateVideoThumbnail(url: vidURL) else { return }
@@ -267,7 +269,7 @@ class ViewController: UIViewController {
                 exporter.outputURL = directory.appendingPathComponent("exportVideo-\(date).mov")
                 exporter.outputFileType = .mov
                 exporter.shouldOptimizeForNetworkUse = true
-                exporter.videoComposition = generateVideoComposition(for: asset, stylize: isStylized)
+                exporter.videoComposition = composition
                 
                 for button in buttons {
                     button.isEnabled = false
@@ -325,7 +327,7 @@ class ViewController: UIViewController {
             let styleIndex = Int.random(in: 0..<self.numStyles)
             
             if let videoURL = self.videoURL {
-                self.isStylized = true
+//                self.isStylized = true
                 
                 self.playerVC = AVPlayerViewController()
                 let playerItem = self.stylizeVideo(url: videoURL, styleIndex: styleIndex)
@@ -379,11 +381,19 @@ class ViewController: UIViewController {
     }
     
     func stylizeVideo(url: URL, styleIndex: Int) -> AVPlayerItem {
-        let asset = videoAsset!
+        guard let asset = videoAsset else {
+            let playerItem = AVPlayerItem(url: url)
+            
+            playerItem.seekingWaitsForVideoCompositionRendering = true
+            
+            return playerItem
+        }
+        
         let playerItem = AVPlayerItem(asset: asset)
+        composition = generateVideoComposition(for: asset, stylize: true)
         
         playerItem.seekingWaitsForVideoCompositionRendering = true
-        playerItem.videoComposition = generateVideoComposition(for: asset, stylize: true)
+        playerItem.videoComposition = composition
         
         return playerItem
     }
