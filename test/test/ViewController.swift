@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageOutlet: UIImageView!
     @IBOutlet var sliderOutlets: [UISlider]!
     @IBOutlet var buttons: [UIButton]!
+    @IBOutlet weak var labelOutlet: UILabel!
     
     let loadingScreen = LoadingScreen()
     var beginImage: CIImage!
@@ -23,6 +24,7 @@ class ViewController: UIViewController {
     private var playerVC: AVPlayerViewController?
     private var videoURL: URL?
     private var videoAsset: AVAsset?
+    private var isStylized = false
     
     let numStyles = 9
     
@@ -50,6 +52,7 @@ class ViewController: UIViewController {
         
         // Sample Video
         guard let path = Bundle.main.path(forResource: "video", ofType: ".MOV", inDirectory: "app_assets") else { print("Bad URL"); return }
+        self.labelOutlet.text = "Tap thumbnail to play video"
         videoURL = URL(fileURLWithPath: path)
         setupVideoPlayer()
     }
@@ -69,12 +72,13 @@ class ViewController: UIViewController {
     func setupVideoPlayer() {
         guard let vidURL = videoURL else { return }
         
+        isStylized = false
         playerVC = AVPlayerViewController()
         videoAsset = AVAsset(url: vidURL)
         
         let playerItem = AVPlayerItem(asset: videoAsset!)
         playerItem.seekingWaitsForVideoCompositionRendering = true
-        playerItem.videoComposition = generateVideoComposition(for: videoAsset!, styleIndex: 1)
+        playerItem.videoComposition = generateVideoComposition(for: videoAsset!, stylize: false)
         
         self.playerVC!.player = AVPlayer(playerItem: playerItem)
         guard let thumbnail = generateVideoThumbnail(url: vidURL) else { return }
@@ -209,11 +213,14 @@ class ViewController: UIViewController {
     }
     
     @IBAction func revertImage(_ sender: UIButton) {
-        imageOutlet.image = UIImage(ciImage: beginImage)
+        if videoURL != nil {
+            setupVideoPlayer()
+        } else {
+            imageOutlet.image = UIImage(ciImage: beginImage)
+        }
+        
         resetFiltersAndSliders()
     }
-    
-    
     
     @IBAction func loadImage(_ sender: UIButton) {
         AttachmentHandler.handler.showAttachmentActionSheet(vc: self)
@@ -221,6 +228,7 @@ class ViewController: UIViewController {
             self.beginImage = CIImage(image: image)
             self.colorFilter.setValue(self.beginImage, forKey: kCIInputImageKey)
             self.imageOutlet.image = image
+            self.labelOutlet.text = nil
             self.playerVC = nil
             self.videoURL = nil
             
@@ -228,6 +236,7 @@ class ViewController: UIViewController {
         }
         AttachmentHandler.handler.videoPickedBlock = {(videoURL) in
             self.videoURL = videoURL
+            self.labelOutlet.text = "Tap thumbnail to play video"
             self.setupVideoPlayer()
         }
     }
@@ -257,10 +266,11 @@ class ViewController: UIViewController {
                 exporter.outputURL = directory.appendingPathComponent("exportVideo-\(date).mov")
                 exporter.outputFileType = .mov
                 exporter.shouldOptimizeForNetworkUse = true
-                exporter.videoComposition = generateVideoComposition(for: asset, styleIndex: 0)
+                exporter.videoComposition = generateVideoComposition(for: asset, stylize: isStylized)
                 
                 for button in buttons {
                     button.isEnabled = false
+                    button.alpha = 0.5
                 }
                 for slider in sliderOutlets {
                     slider.isEnabled = false
@@ -272,6 +282,7 @@ class ViewController: UIViewController {
                         
                         for button in self.buttons {
                             button.isEnabled = true
+                            button.alpha = 1.0
                         }
                         
                         for slider in self.sliderOutlets {
@@ -313,12 +324,15 @@ class ViewController: UIViewController {
             let styleIndex = Int.random(in: 0..<self.numStyles)
             
             if let videoURL = self.videoURL {
+                self.isStylized = true
+                
                 self.playerVC = AVPlayerViewController()
                 let playerItem = self.stylizeVideo(url: videoURL, styleIndex: styleIndex)
                 self.playerVC?.player = AVPlayer(playerItem: playerItem)
+                
                 let styleImage = self.generateVideoThumbnail(url: videoURL)
                 self.imageOutlet.image = styleImage
-                self.colorFilter.setValue(CIImage(image: styleImage!), forKey: kCIInputImageKey)
+//                self.colorFilter.setValue(CIImage(image: styleImage!), forKey: kCIInputImageKey)
             } else {
                 let styleImage = self.stylizePic(inputImg: UIImage(ciImage: self.beginImage), styleIndex: styleIndex)
                 self.imageOutlet.image = UIImage(ciImage: styleImage)
@@ -342,12 +356,18 @@ class ViewController: UIViewController {
         }
     }
     
-    func generateVideoComposition(for asset: AVAsset, styleIndex: Int) -> AVVideoComposition {
+    func generateVideoComposition(for asset: AVAsset, stylize: Bool) -> AVVideoComposition {
         let composition = AVMutableVideoComposition(asset: asset, applyingCIFiltersWithHandler: { request in
 //            guard let self = self else { request.finish(with: Error); return}
             let inputImage = request.sourceImage
-//            let styledImage = self.stylizePic(inputImg: UIImage(ciImage: inputImage), styleIndex: styleIndex)
-            self.colorFilter.setValue(inputImage, forKey: kCIInputImageKey)
+            
+            if stylize {
+                let styleImage = self.stylizePic(inputImg: UIImage(ciImage: inputImage), styleIndex: 0)
+                self.colorFilter.setValue(styleImage, forKey: kCIInputImageKey)
+            } else {
+                self.colorFilter.setValue(inputImage, forKey: kCIInputImageKey)
+            }
+            
             let outputImage = self.colorFilter.outputImage
             
             request.finish(with: outputImage!, context: nil)
@@ -362,39 +382,18 @@ class ViewController: UIViewController {
         let playerItem = AVPlayerItem(asset: asset)
         
         playerItem.seekingWaitsForVideoCompositionRendering = true
-        playerItem.videoComposition = generateVideoComposition(for: asset, styleIndex: styleIndex)
+        playerItem.videoComposition = generateVideoComposition(for: asset, stylize: true)
         
         return playerItem
     }
     
     func stylizePic(inputImg: UIImage, styleIndex: Int) -> CIImage {
-        //print("This Ran")
-//        let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
-//        for i in 0...((styleArray?.count)!-1){
-//            styleArray?[i] = 0.0
-//        }
-//
-//        styleArray?[styleIndex] = 1.0
-//
-//        let model = Trial3()
-//
-//        var pixelBuffer: CVPixelBuffer?
-//        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
-//                     kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
-//        CVPixelBufferCreate(kCFAllocatorDefault,
-//                            Int(inputImg.size.width),
-//                            Int(inputImg.size.height),
-//                            kCVPixelFormatType_32BGRA,
-//                            attrs,
-//                            &pixelBuffer)
-        
-        //let pixelBuffer = createPixelBuffer(width: Int(inputImg.size.width), height: Int(inputImg.size.height))
-   
         
         let pixelBuffer = createPixelBuffer(width: 480, height: 640)
         let aspectRatio = 480.0/640.0
         let scalingFactor = ((Double(inputImg.size.width) * Double(inputImg.size.height))/(480.0 * 640.0)).squareRoot()
         var scaledCIImage: CIImage
+        
         if let ciImage = inputImg.ciImage {
             scaledCIImage = scaleFilter(ciImage, aspectRatio: aspectRatio, scale:scalingFactor)
             context.render(scaledCIImage, to: pixelBuffer!)
@@ -422,7 +421,7 @@ class ViewController: UIViewController {
         
 //        let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
         let predImage = CIImage(cvPixelBuffer: (prediction?._156)!)
-        return scaledCIImage
+        return predImage
     }
     
     func scaleFilter(_ input:CIImage, aspectRatio: Double, scale: Double) -> CIImage {

@@ -15,8 +15,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a7D-Fo-c0j">
+                                <rect key="frame" x="10" y="44" width="394" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="JzV-3X-1JT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="D5w-yg-ceX">
-                                <rect key="frame" x="10" y="54" width="394" height="461"/>
+                                <rect key="frame" x="10" y="64" width="394" height="451"/>
                                 <gestureRecognizers/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="5O2-4o-c5k" appends="YES" id="r9N-Sp-WCg"/>
@@ -158,12 +167,15 @@
                         </subviews>
                         <color key="backgroundColor" red="0.019607843137254902" green="0.019607843137254902" blue="0.019607843137254902" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="a7D-Fo-c0j" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="3S2-Vb-hXj"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="D5w-yg-ceX" secondAttribute="bottom" constant="298" id="49F-EN-kZe"/>
                             <constraint firstItem="Ljd-4L-Waw" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="GrS-iB-Im0"/>
+                            <constraint firstItem="a7D-Fo-c0j" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="KXs-fo-enh"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Ljd-4L-Waw" secondAttribute="bottom" id="S9p-vg-bC2"/>
-                            <constraint firstItem="D5w-yg-ceX" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="cje-er-kPL"/>
+                            <constraint firstItem="D5w-yg-ceX" firstAttribute="top" secondItem="a7D-Fo-c0j" secondAttribute="top" constant="20" id="dJl-Xs-Ted"/>
                             <constraint firstItem="D5w-yg-ceX" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="eTc-av-8sm"/>
                             <constraint firstItem="Ljd-4L-Waw" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="fsB-x4-M98"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="a7D-Fo-c0j" secondAttribute="trailing" constant="10" id="keZ-So-2Fa"/>
                             <constraint firstItem="D5w-yg-ceX" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="xXq-xa-egw"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -171,6 +183,7 @@
                     <tabBarItem key="tabBarItem" title="Media Editor" image="photo.fill" catalog="system" id="kOH-od-aJX"/>
                     <connections>
                         <outlet property="imageOutlet" destination="D5w-yg-ceX" id="WNr-s8-gqX"/>
+                        <outlet property="labelOutlet" destination="a7D-Fo-c0j" id="eR5-wn-gGm"/>
                         <outletCollection property="sliderOutlets" destination="172-0t-3oY" collectionClass="NSMutableArray" id="d4U-Yr-UxT"/>
                         <outletCollection property="sliderOutlets" destination="oo8-Zg-rUg" collectionClass="NSMutableArray" id="5Xe-0D-ZRI"/>
                         <outletCollection property="sliderOutlets" destination="Mle-ka-Ac0" collectionClass="NSMutableArray" id="i2g-He-QQZ"/>
@@ -183,7 +196,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="5O2-4o-c5k">
                     <connections>
-                        <action selector="imageTapped:" destination="BYZ-38-t0r" id="JwW-Gg-aj7"/>
+                        <action selector="imageTapped:" destination="BYZ-38-t0r" id="zeo-W9-DlQ"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>

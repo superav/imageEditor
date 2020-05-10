@@ -48,22 +48,6 @@ class AttachmentHandler: NSObject {
             }
             
         }
-        
-        //            if permissionGranted {
-        //                switch fileType {
-        //                case .camera:
-        //                    self.openCamera()
-        //
-        //                case .video:
-        //                    self.openVideo()
-        //
-        //                case .photoLibrary:
-        //                    self.openPhotos()
-        //                }
-        //            } else {
-        //                self.showSettingsAlert(fileType)
-        //            }
-        
     }
     
     func checkPermissions(completion: @escaping (Bool) -> ()) {
@@ -76,39 +60,16 @@ class AttachmentHandler: NSObject {
                 switch status {
                 case .authorized:
                     completion(true)
-                    //                    DispatchQueue.main.async {
-                    //                    permissionGranted = true
-                    //                    }
                     
                 default:
-                    //                    permissionGranted = false
                     completion(false)
                 }
             }
-            
-            //            completion(requestPermission())
-            
+                        
         default:
             completion(false)
         }
     }
-    
-//    func requestPermission() -> Bool {
-//        var permissionGranted = false
-//        PHPhotoLibrary.requestAuthorization { (status) in
-//            switch status {
-//            case .authorized:
-//                DispatchQueue.main.async {
-//                    permissionGranted = true
-//                }
-//                
-//            default:
-//                permissionGranted = false
-//            }
-//        }
-//        
-//        return permissionGranted
-//    }
     
     // Camera Access
     func openCamera(){
@@ -133,6 +94,8 @@ class AttachmentHandler: NSObject {
     func openVideo(){
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
             let pickerController = UIImagePickerController()
+            pickerController.videoMaximumDuration = 5.0
+            pickerController.allowsEditing = true
             pickerController.delegate = self
             pickerController.sourceType = .photoLibrary
             pickerController.mediaTypes = [kUTTypeMovie as String, kUTTypeVideo as String]
@@ -214,59 +177,11 @@ extension AttachmentHandler: UIImagePickerControllerDelegate, UINavigationContro
         }
         
         if let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
-            print("URL: ", videoURL)
-            
-            let data = NSData(contentsOf: videoURL as URL)!
-            print("Size before compression: \(Double(data.length / 1048576)) mb")
-            compress(videoURL)
+            self.videoPickedBlock?(videoURL)
         } else{
             print("No Video")
         }
         
         viewController?.dismiss(animated: true, completion: nil)
-    }
-    
-    fileprivate func compress(_ videoURL: URL){
-        let compressURL = URL(fileURLWithPath: NSTemporaryDirectory() + NSUUID().uuidString + ".MOV")
-        //        let compressURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + NSUUID().uuidString + ".MOV")
-        
-        compressVideo(inputURL: videoURL, outputURL: compressURL) { (exportSession) in
-            guard let session = exportSession else {
-                return
-            }
-            
-            switch session.status {
-            case .completed:
-                guard let compressedData = NSData(contentsOf: compressURL) else {
-                    return
-                }
-                
-                print("Size after compression \(Double(compressedData.length / 1048576)) mb")
-                
-                DispatchQueue.main.async {
-                    self.videoPickedBlock?(compressURL)
-                }
-                
-            default:
-                break
-            }
-        }
-    }
-    
-    // Video compression
-    func compressVideo(inputURL: URL, outputURL: URL, handler:@escaping (_ exportSession: AVAssetExportSession?) -> Void){
-        let urlAsset = AVURLAsset(url: inputURL, options: nil)
-        
-        guard let exportSession = AVAssetExportSession(asset: urlAsset, presetName: AVAssetExportPreset1280x720) else {
-            handler(nil)
-            return
-        }
-        
-        exportSession.outputURL = outputURL
-        exportSession.outputFileType = AVFileType.mov
-        exportSession.shouldOptimizeForNetworkUse = true
-        exportSession.exportAsynchronously {
-            () -> Void in handler(exportSession)
-        }
     }
 }
