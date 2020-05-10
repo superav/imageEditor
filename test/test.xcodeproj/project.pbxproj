@@ -360,7 +360,7 @@
 				DEVELOPMENT_TEAM = KVDLQGW65R;
 				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = test/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -382,7 +382,7 @@
 				DEVELOPMENT_TEAM = KVDLQGW65R;
 				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = test/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

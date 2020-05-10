@@ -44,6 +44,7 @@ class VideoController: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
             try configureCaptureOutput()
             try startCaptureSession()
         } catch {
+            print("Error: Something Failed in Config")
             return
         }
     }
@@ -95,7 +96,8 @@ class VideoController: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
         captureVideoOutput!.setSampleBufferDelegate(self, queue: DispatchQueue(label: "Sample_Buffer"))
         captureVideoOutput!.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA as UInt32]
         
-        captureSession.sessionPreset = .vga640x480
+//        captureSession.sessionPreset = .vga640x480
+        captureSession.sessionPreset = .hd1920x1080
         
         if captureSession.canAddOutput(captureVideoOutput!) { captureSession.addOutput(captureVideoOutput!)}
     }
@@ -105,9 +107,11 @@ class VideoController: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
         guard let captureSession = self.captureSession else { throw camError.captureSessionIsMissing }
         captureSession.startRunning()
     }
-    
-    func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         connection.videoOrientation = .portrait
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        resizePixelBuffer(imageBuffer, width: 480, height: 640, output: resizedBuffer!, context: context)
         
         var ciImage: CIImage
         
@@ -118,7 +122,7 @@ class VideoController: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
                 print("Camera warming up")
                 return
             }
-            
+
             ciImage = CIImage(cvImageBuffer: (prediction?._156)!)
         } else {
             guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }

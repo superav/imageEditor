@@ -327,15 +327,20 @@ class ViewController: UIViewController {
             let styleIndex = Int.random(in: 0..<self.numStyles)
             
             if let videoURL = self.videoURL {
-//                self.isStylized = true
                 
                 self.playerVC = AVPlayerViewController()
                 let playerItem = self.stylizeVideo(url: videoURL, styleIndex: styleIndex)
                 self.playerVC?.player = AVPlayer(playerItem: playerItem)
                 
                 let styleImage = self.generateVideoThumbnail(url: videoURL)
-                self.imageOutlet.image = styleImage
-//                self.colorFilter.setValue(CIImage(image: styleImage!), forKey: kCIInputImageKey)
+                
+                if let inputImg = styleImage {
+                    let previewImg = self.stylizePic(inputImg: inputImg, styleIndex: styleIndex)
+                    self.imageOutlet.image = UIImage(ciImage: previewImg)
+                    self.colorFilter.setValue(previewImg, forKey: kCIInputImageKey)
+                } else {
+                    self.imageOutlet.image = styleImage
+                }
             } else {
                 let styleImage = self.stylizePic(inputImg: UIImage(ciImage: self.beginImage), styleIndex: styleIndex)
                 self.imageOutlet.image = UIImage(ciImage: styleImage)
