@@ -138,6 +138,7 @@ class VideoController: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
             print("Style disabled")
         }
     }
+    
     /*
     // MARK: - Navigation
 

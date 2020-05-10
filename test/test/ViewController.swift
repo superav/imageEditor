@@ -9,7 +9,6 @@
 import UIKit
 import CoreML
 import AVKit
-import AssetsLibrary
 
 class ViewController: UIViewController {
     @IBOutlet weak var imageOutlet: UIImageView!
@@ -27,8 +26,15 @@ class ViewController: UIViewController {
     
     let numStyles = 9
     
+    var mlModelWrapper: green_swirly?
+    var inputImage: green_swirlyInput?
+    var prediction: green_swirlyOutput?
+    var CPUOptions: MLPredictionOptions?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loadMLModel()
         
         // Do any additional setup after loading the view.
         colorFilter = CIFilter(name: "CIColorControls")
@@ -49,6 +55,13 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         self.view.addSubview(loadingScreen)
         loadingScreen.hide()
+    }
+    
+    func loadMLModel() {
+        let bundle = Bundle(for: green_swirly.self)
+        let modelURL = bundle.url(forResource: "green_swirly", withExtension: "mlmodelc")!
+        
+        mlModelWrapper = try? green_swirly(contentsOf: modelURL)
     }
     
     func setupVideoPlayer() {
@@ -353,37 +366,51 @@ class ViewController: UIViewController {
     }
     
     func stylizePic(inputImg: UIImage, styleIndex: Int) -> CIImage {
-        let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
-        for i in 0...((styleArray?.count)!-1){
-            styleArray?[i] = 0.0
-        }
+//        let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
+//        for i in 0...((styleArray?.count)!-1){
+//            styleArray?[i] = 0.0
+//        }
+//
+//        styleArray?[styleIndex] = 1.0
+//
+//        let model = Trial3()
+//
+//        var pixelBuffer: CVPixelBuffer?
+//        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+//                     kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
+//        CVPixelBufferCreate(kCFAllocatorDefault,
+//                            Int(inputImg.size.width),
+//                            Int(inputImg.size.height),
+//                            kCVPixelFormatType_32BGRA,
+//                            attrs,
+//                            &pixelBuffer)
         
-        styleArray?[styleIndex] = 1.0
-        
-        let model = Trial3()
-        
-        var pixelBuffer: CVPixelBuffer?
-        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
-                     kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
-        CVPixelBufferCreate(kCFAllocatorDefault,
-                            Int(inputImg.size.width),
-                            Int(inputImg.size.height),
-                            kCVPixelFormatType_32BGRA,
-                            attrs,
-                            &pixelBuffer)
+        let pixelBuffer = createPixelBuffer(width: Int(inputImg.size.width), height: Int(inputImg.size.height))
+//        let pixelBuffer = createPixelBuffer(width: 480, height: 640)
         
         if let ciImage = inputImg.ciImage {
             context.render(ciImage, to: pixelBuffer!)
         }else {
             context.render(CIImage(cgImage:inputImg.cgImage!), to: pixelBuffer!) // change begin image for video stuff
         }
-        var output:Trial3Output? = nil;
-        let queue = OperationQueue()
-        queue.addOperation {
-            output = try? model.prediction(image: pixelBuffer!, index: styleArray!)
+        
+        do {
+            prediction = try mlModelWrapper?.prediction(_0: pixelBuffer!)
+        } catch {
+            print("No.")
         }
-        queue.waitUntilAllOperationsAreFinished()
-        let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
+        
+//        var output:Trial3Output? = nil;
+//        let queue = OperationQueue()
+//
+//        queue.addOperation {
+//            output = try? model.prediction(image: pixelBuffer!, index: styleArray!)
+//        }
+//
+//        queue.waitUntilAllOperationsAreFinished()
+        
+//        let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
+        let predImage = CIImage(cvPixelBuffer: (prediction?._156)!)
         return predImage
     }
 }
