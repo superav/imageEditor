@@ -393,9 +393,10 @@ class ViewController: UIViewController {
         
         let pixelBuffer = createPixelBuffer(width: 480, height: 640)
         let aspectRatio = 480.0/640.0
+        let scalingFactor = ((Double(inputImg.size.width) * Double(inputImg.size.height))/(480.0 * 640.0)).squareRoot()
         var scaledCIImage: CIImage
         if let ciImage = inputImg.ciImage {
-            scaledCIImage = scaleFilter(ciImage, aspectRatio: aspectRatio, scale:0.5)
+            scaledCIImage = scaleFilter(ciImage, aspectRatio: aspectRatio, scale:scalingFactor)
             context.render(scaledCIImage, to: pixelBuffer!)
             scaledCIImage = ciImage
         }else {
