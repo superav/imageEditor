@@ -5,7 +5,6 @@
 //  Created by Jessica Zhang on 4/19/20.
 //  Copyright © 2020 Jessica Zhang. All rights reserved.
 //
-// Reference: https://medium.com/@deepakrajmurugesan/swift-access-ios-camera-photo-library-video-and-file-from-user-device-6a7fd66beca2
 
 import UIKit
 import Photos
@@ -14,7 +13,6 @@ import MobileCoreServices
 class AttachmentHandler: NSObject {
     static let handler = AttachmentHandler()
     fileprivate var viewController: UIViewController?
-    //    private var permissionGranted = false
     
     var imagePickedBlock: ((UIImage) -> (Void))?
     var videoPickedBlock: ((URL) -> (Void))?

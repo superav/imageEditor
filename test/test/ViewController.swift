@@ -111,17 +111,18 @@ class ViewController: UIViewController {
     
     func reapplyFilters() {
         for slider in sliderOutlets {
+
             switch slider.restorationIdentifier {
             case "sat":
                 colorFilter.setValue(slider.value, forKey: kCIInputSaturationKey)
                 break
                 
             case "contrast":
-                colorFilter.setValue(slider.value, forKey: kCIInputContrastKey)
+                colorFilter.setValue(slider.value * 2, forKey: kCIInputContrastKey)
                 break
                 
             default:
-                colorFilter.setValue(slider.value, forKey: kCIInputBrightnessKey)
+                colorFilter.setValue(slider.value / 5, forKey: kCIInputBrightnessKey)
                 break
             }
         }
@@ -183,7 +184,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func changeBrightness(_ sender: UISlider) {
-        colorFilter.setValue(sender.value / 2, forKey: kCIInputBrightnessKey)
+        colorFilter.setValue(sender.value / 5, forKey: kCIInputBrightnessKey)
         let outputImage = colorFilter.outputImage
         
         if let cgImage = context!.createCGImage(outputImage!, from: outputImage!.extent){
@@ -421,7 +422,7 @@ class ViewController: UIViewController {
         
 //        let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
         let predImage = CIImage(cvPixelBuffer: (prediction?._156)!)
-        return predImage
+        return scaledCIImage
     }
     
     func scaleFilter(_ input:CIImage, aspectRatio: Double, scale: Double) -> CIImage {
