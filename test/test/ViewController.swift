@@ -31,6 +31,8 @@ class ViewController: UIViewController {
     var prediction: green_swirlyOutput?
     var CPUOptions: MLPredictionOptions?
     
+    let scaleFilter = CIFilter(name: "CILanczosScaleTransform")!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -366,6 +368,7 @@ class ViewController: UIViewController {
     }
     
     func stylizePic(inputImg: UIImage, styleIndex: Int) -> CIImage {
+        //print("This Ran")
 //        let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
 //        for i in 0...((styleArray?.count)!-1){
 //            styleArray?[i] = 0.0
@@ -385,13 +388,20 @@ class ViewController: UIViewController {
 //                            attrs,
 //                            &pixelBuffer)
         
-        let pixelBuffer = createPixelBuffer(width: Int(inputImg.size.width), height: Int(inputImg.size.height))
-//        let pixelBuffer = createPixelBuffer(width: 480, height: 640)
+        //let pixelBuffer = createPixelBuffer(width: Int(inputImg.size.width), height: Int(inputImg.size.height))
+   
         
+        let pixelBuffer = createPixelBuffer(width: 480, height: 640)
+        let aspectRatio = 480.0/640.0
+        var scaledCIImage: CIImage
         if let ciImage = inputImg.ciImage {
-            context.render(ciImage, to: pixelBuffer!)
+            scaledCIImage = scaleFilter(ciImage, aspectRatio: aspectRatio, scale:0.5)
+            context.render(scaledCIImage, to: pixelBuffer!)
+            scaledCIImage = ciImage
         }else {
-            context.render(CIImage(cgImage:inputImg.cgImage!), to: pixelBuffer!) // change begin image for video stuff
+            scaledCIImage = scaleFilter(CIImage(cgImage:inputImg.cgImage!), aspectRatio: aspectRatio, scale:0.5)
+            context.render(scaledCIImage, to: pixelBuffer!) // change begin image for video stuff
+            scaledCIImage = CIImage(cgImage:inputImg.cgImage!)
         }
         
         do {
@@ -411,7 +421,14 @@ class ViewController: UIViewController {
         
 //        let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!) // output image
         let predImage = CIImage(cvPixelBuffer: (prediction?._156)!)
-        return predImage
+        return scaledCIImage
+    }
+    
+    func scaleFilter(_ input:CIImage, aspectRatio: Double, scale: Double) -> CIImage {
+        scaleFilter.setValue(input, forKey: kCIInputImageKey)
+        scaleFilter.setValue(scale, forKey: kCIInputScaleKey)
+        scaleFilter.setValue(aspectRatio, forKey: kCIInputAspectRatioKey)
+        return scaleFilter.outputImage!
     }
 }
 
