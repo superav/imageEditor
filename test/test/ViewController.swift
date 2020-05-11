@@ -60,7 +60,7 @@ class ViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.view.addSubview(remixLoadingScreen)
+        self.view.addSubview(savingLoadingScreen)
         self.view.addSubview(remixLoadingScreen)
         savingLoadingScreen.hide()
         remixLoadingScreen.hide()
@@ -256,9 +256,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func saveMedia(_ sender: UIButton) {
-        savingLoadingScreen.show()
         
-        if let _ = playerVC, let vidURL = videoURL, let asset = videoAsset {
+        if let _ = self.playerVC, let vidURL = self.videoURL, let asset = self.videoAsset {
             let videoPath = vidURL.path
             
             if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(videoPath) {
@@ -273,45 +272,57 @@ class ViewController: UIViewController {
                 exporter.outputURL = directory.appendingPathComponent("exportVideo-\(date).mov")
                 exporter.outputFileType = .mov
                 exporter.shouldOptimizeForNetworkUse = true
-                exporter.videoComposition = composition
-                
-                for button in buttons {
-                    button.isEnabled = false
-                    button.alpha = 0.5
-                }
-                for slider in sliderOutlets {
-                    slider.isEnabled = false
-                }
-                
-                exporter.exportAsynchronously() {
-                    DispatchQueue.main.async {
-                        self.exportFinished(exporter)
-                        
-                        for button in self.buttons {
-                            button.isEnabled = true
-                            button.alpha = 1.0
-                        }
-                        
-                        for slider in self.sliderOutlets {
-                            slider.isEnabled = true
+                exporter.videoComposition = self.composition
+                savingLoadingScreen.show()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01){
+                    
+                    for button in self.buttons {
+                        button.isEnabled = false
+                        button.alpha = 0.5
+                    }
+                    for slider in self.sliderOutlets {
+                        slider.isEnabled = false
+                    }
+                    
+                    exporter.exportAsynchronously() {
+                        DispatchQueue.main.async {
+                            self.exportFinished(exporter)
+                            self.savingLoadingScreen.hide()
+                            
+                            for button in self.buttons {
+                                button.isEnabled = true
+                                button.alpha = 1.0
+                            }
+                            
+                            for slider in self.sliderOutlets {
+                                slider.isEnabled = true
+                            }
                         }
                     }
                 }
             }
+            
         } else {
-            guard let outputImage = imageOutlet.image else { return }
+            guard let outputImage = self.imageOutlet.image else { return }
             
             if outputImage.cgImage != nil {
-                UIImageWriteToSavedPhotosAlbum(outputImage, self, #selector(saveImage(_:didFinishSavingWithError:contextInfo:)), nil)
+                UIImageWriteToSavedPhotosAlbum(outputImage, self, #selector(self.saveImage(_:didFinishSavingWithError:contextInfo:)), nil)
             } else{
                 guard let ciImage = outputImage.ciImage else { return }
-                guard let cgImage = generateCGImage(from: ciImage) else { return }
-                
-                UIImageWriteToSavedPhotosAlbum(UIImage(cgImage: cgImage), self, #selector(saveImage(_:didFinishSavingWithError:contextInfo:)), nil)
+                guard let cgImage = self.generateCGImage(from: ciImage) else { return }
+                savingLoadingScreen.show()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01){
+                    
+                    UIImageWriteToSavedPhotosAlbum(UIImage(cgImage: cgImage), self, #selector(self.saveImage(_:didFinishSavingWithError:contextInfo:)), nil)
+                    DispatchQueue.main.async {
+                        self.savingLoadingScreen.hide()
+                        
+                    }
+                }
             }
         }
         
-        savingLoadingScreen.hide()
+        
     }
     
     
