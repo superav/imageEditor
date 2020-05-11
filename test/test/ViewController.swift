@@ -53,7 +53,7 @@ class ViewController: UIViewController {
 //        colorFilter.setValue(beginImage, forKey: kCIInputImageKey)
         
         // Sample Video
-        guard let path = Bundle.main.path(forResource: "video", ofType: ".MOV", inDirectory: "app_assets") else { print("Bad URL"); return }
+        guard let path = Bundle.main.path(forResource: "video", ofType: ".mov", inDirectory: "app_assets") else { print("Bad URL"); return }
         self.labelOutlet.text = "Tap thumbnail to play video"
         videoURL = URL(fileURLWithPath: path)
         setupVideoPlayer()
