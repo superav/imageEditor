@@ -11,6 +11,7 @@ import UIKit
 class LoadingScreen: UIVisualEffectView {
     let activityIndicator = UIActivityIndicatorView(style: .medium)
     let label = UILabel()
+    var text = ""
     let blur = UIBlurEffect(style: .extraLight)
     let view: UIVisualEffectView
     
@@ -22,13 +23,15 @@ class LoadingScreen: UIVisualEffectView {
      }
      */
     
-    init() {
+    init(_ text: String) {
         view = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blur))
+        self.text = text
         super.init(effect: blur)
         setup()
     }
     
     required init?(coder aDecoder: NSCoder) {
+        self.text = ""
         view = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blur))
         super.init(coder: aDecoder)
         setup()
@@ -70,7 +73,7 @@ class LoadingScreen: UIVisualEffectView {
             
             layer.cornerRadius = 8.0
             layer.masksToBounds = true
-            label.text = "Remixing"
+            label.text = text
             label.textAlignment = NSTextAlignment.center
             label.frame = CGRect(x: activityIndicatorSize + 5,
                                 y: 0,

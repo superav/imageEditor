@@ -16,7 +16,8 @@ class ViewController: UIViewController {
     @IBOutlet var buttons: [UIButton]!
     @IBOutlet weak var labelOutlet: UILabel!
     
-    let loadingScreen = LoadingScreen()
+    let remixLoadingScreen = LoadingScreen("Remixing")
+    let savingLoadingScreen = LoadingScreen("Saving")
     var beginImage: CIImage!
     var colorFilter: CIFilter!
     
@@ -59,8 +60,10 @@ class ViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.view.addSubview(loadingScreen)
-        loadingScreen.hide()
+        self.view.addSubview(remixLoadingScreen)
+        self.view.addSubview(remixLoadingScreen)
+        savingLoadingScreen.hide()
+        remixLoadingScreen.hide()
     }
     
     func loadMLModel() {
@@ -73,7 +76,6 @@ class ViewController: UIViewController {
     func setupVideoPlayer() {
         guard let vidURL = videoURL else { return }
         
-//        isStylized = false
         playerVC = AVPlayerViewController()
         videoAsset = AVAsset(url: vidURL)
         composition = generateVideoComposition(for: videoAsset!, stylize: false)
@@ -254,6 +256,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func saveMedia(_ sender: UIButton) {
+        savingLoadingScreen.show()
+        
         if let _ = playerVC, let vidURL = videoURL, let asset = videoAsset {
             let videoPath = vidURL.path
             
@@ -306,13 +310,15 @@ class ViewController: UIViewController {
                 UIImageWriteToSavedPhotosAlbum(UIImage(cgImage: cgImage), self, #selector(saveImage(_:didFinishSavingWithError:contextInfo:)), nil)
             }
         }
+        
+        savingLoadingScreen.hide()
     }
     
     
     //ML STUFF BEGINS DOWN HERE
     
     @IBAction func remixPressed(_ sender: Any) {
-        loadingScreen.show()
+        remixLoadingScreen.show()
         
         for button in buttons {
             button.isEnabled = false
@@ -350,7 +356,7 @@ class ViewController: UIViewController {
             self.reapplyFilters()
             
             DispatchQueue.main.async {
-                self.loadingScreen.hide()
+                self.remixLoadingScreen.hide()
                 
                 for button in self.buttons {
                     button.isEnabled = true
