@@ -12,7 +12,7 @@ class LoadingScreen: UIVisualEffectView {
     let activityIndicator = UIActivityIndicatorView(style: .medium)
     let label = UILabel()
     var text = ""
-    let blur = UIBlurEffect(style: .extraLight)
+    let blur = UIBlurEffect(style: .light)
     let view: UIVisualEffectView
     
     /*
@@ -79,7 +79,7 @@ class LoadingScreen: UIVisualEffectView {
                                 y: 0,
                                 width: width - activityIndicatorSize - 15,
                                 height: height)
-            label.textColor = UIColor.gray
+            label.textColor = UIColor.systemGray4
             label.font = UIFont.boldSystemFont(ofSize: 16)
         }
     }
